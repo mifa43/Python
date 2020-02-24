@@ -26,7 +26,7 @@ print('Znakovi od pocetka do kraja su', ime[:])
 mojp = ['sir', 'mleko', 'jaja', 'brasno']
 ime = 'Milos'
 
-# primer indeksiranja
+# primer indeksiranja operacija Subskripcije
 print ('\nPozicija 0 je', mojp[0])  # kada smo pozvali listu mojp u uglastoj zagradi [] definisali smo broj koji oznacava poziciju stavke u listi u ovom slucaju 0 je sir u Pythonu brojevi krecu od 0 
 print ('Pozicija 1 je', mojp[1])
 print ('Pozicija 2 je', mojp[2])
@@ -35,3 +35,9 @@ print ('Pozicija 3 je', mojp[3])
 print ('\nPozicija -1 je', mojp[-1]) # kada koristimo negativne brojeve nasa lista se prikazuje od pozadi -1 = barso, -4 = sir brojevi krecu -1,-2,-3,-4,-5...
 print ('Pozicija -2 je', mojp[-2])
 print ('Pozicija -4 je', mojp[-4])
+# Znakovi
+print ('\nznak 0 je', ime[0]) # posto ime nije navedeno u [] ili {} tretira se kao str-string a brojevima u uglastim zagradama nam prikazuje karakter koji se nalazi na toj poziciji 
+print ('znak 1 je', ime[1])
+print ('znak 2 je', ime[2])
+print ('znak 3 je', ime[3])
+print ('znak 4 je', ime[4])
