@@ -64,3 +64,4 @@ print ('pozicije stringova od 3 : je', ime[2:])  # znaci prikazi sve od drugog k
 print ('pozicije od 1 do -1 je', ime[1 : -1])   # pozicija 1 oznacava poziciju i dok -1 je granica  i prikazuje nam tako da 1 : -1 oznacava ilo 
 print ("oznaka ':' daje", ime[:]) # prikazuje nam ceo string
 # Napomena : Prvi broj (pre dvotačke) u operaciji isecanja, se odnosi na poziciju odakle isečak počinje, a drugi broj (posle dvotačke) pokazuje gde će se zaustaviti sečenje tj. granica
+# Ako prvi broj nije naveden, Python će početi isecanje od početka niza. Ako je drugi broj izostavljen, Python će se zaustaviti na kraju niza
