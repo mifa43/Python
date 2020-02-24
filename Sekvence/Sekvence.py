@@ -41,3 +41,13 @@ print ('znak 1 je', ime[1])
 print ('znak 2 je', ime[2])
 print ('znak 3 je', ime[3])
 print ('znak 4 je', ime[4])
+
+# isecanje lista
+#   0       1      2        
+#  sir    mleko   jaja   
+#  -3      -2     -1        
+
+print ('\npozicije od 1 do 3 je', mojp[1 : 3])  # kada smo napisali 1 : 3 rekli smo da je 3 granica i nece napisati 3 stavku da smo napisali 1 : 4 granica je 4 i nece je preci ali napisace 3 stavke
+print ('pozicije od 0 do 4 je', mojp[0 : 4]) # od 0 : 4 oznacili smo da zelimo da vidimo sve stvake
+print ('pozicije od 1 do -1 je', mojp[1 : -1]) # 1 je pozicija mleka dok je -1 pozicija jaja 
+print ('Pozicije svih stavki je ', mojp[:]) # kada smo stavili dvotacku ':' rekli smo da zelimo da vidimo sve iz liste 
