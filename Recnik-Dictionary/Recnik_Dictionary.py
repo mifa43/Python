@@ -31,7 +31,7 @@ del ab['Ognjen']    # pomocu del-a smo obrisali ognjena i vise se ne prikazuje u
 print ('\nU mojoj knjizi adresa imam {0} kontakta ali bice ih vise!\n'.format(len(ab))) # U viticastoj {} zagradi smo pozvali vec definisanu ab i pomocu .format je ukljucili u print i len je izracuno koji je broj kontakta = 5 kontakta
 
 for ime, adresa in ab.items():  # u for petlji smo definisali varijable ime i adresu koje se nalaze u ab-u for nam izvrsava od prvog do poslednjeg kontakta u ab.itemu
-    print ('Moje prijatelji se zovu {0} a njihov mejl je {1}'.format(ime, adresa))  # sa formatom smo je ukljucili u funkciju {0} poziva imena a {1} mejl adresu 
+    print ('Moje prijatelji se zovu {0} a njihov mejl je {1} a adresa '.format(ime, adresa))  # sa formatom smo je ukljucili u funkciju {0} poziva imena a {1} mejl adresu 
 
 ab ['Milos'] = 'Mifa43@gmail.com' # ab ima promenljivu vrednost 'milos' ona je jednaka mojoj mejl adresi 'mifa43@gmail.com'
 if 'Milos' in ab:   # ovde smo rekli ako je milos u ab da se isprinta moja mejl adresa ovo je jos jedan primer kako mozemo da definisemo kontakt 
