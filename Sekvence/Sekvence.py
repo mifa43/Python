@@ -27,4 +27,11 @@ mojp = ['sir', 'mleko', 'jaja', 'brasno']
 ime = 'Milos'
 
 # primer indeksiranja
-print ('\nPozicija 0 je', mojp[0])
+print ('\nPozicija 0 je', mojp[0])  # kada smo pozvali listu mojp u uglastoj zagradi [] definisali smo broj koji oznacava poziciju stavke u listi u ovom slucaju 0 je sir u Pythonu brojevi krecu od 0 
+print ('Pozicija 1 je', mojp[1])
+print ('Pozicija 2 je', mojp[2])
+print ('Pozicija 3 je', mojp[3])
+# negativni brojevi
+print ('\nPozicija -1 je', mojp[-1]) # kada koristimo negativne brojeve nasa lista se prikazuje od pozadi -1 = barso, -4 = sir brojevi krecu -1,-2,-3,-4,-5...
+print ('Pozicija -2 je', mojp[-2])
+print ('Pozicija -4 je', mojp[-4])
