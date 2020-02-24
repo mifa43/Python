@@ -65,3 +65,9 @@ print ('pozicije od 1 do -1 je', ime[1 : -1])   # pozicija 1 oznacava poziciju i
 print ("oznaka ':' daje", ime[:]) # prikazuje nam ceo string
 # Napomena : Prvi broj (pre dvotačke) u operaciji isecanja, se odnosi na poziciju odakle isečak počinje, a drugi broj (posle dvotačke) pokazuje gde će se zaustaviti sečenje tj. granica
 # Ako prvi broj nije naveden, Python će početi isecanje od početka niza. Ako je drugi broj izostavljen, Python će se zaustaviti na kraju niza
+
+# sa tri pozicije
+print ('\nPozicija ::1 je', mojp[::1])  # oznacava sve
+print ('Pozicija ::2 je', mojp[::2])  # oznacava prvu stavku i trecu
+print ('Pozicija ::3 je', mojp[::3])  # oznacava prvu i poslednju
+print ('\nPozicija ::-1 je', mojp[::-1])  # oznacava sve ali redosledom odpozadi
