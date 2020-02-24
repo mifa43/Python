@@ -43,6 +43,7 @@ print ('znak 3 je', ime[3])
 print ('znak 4 je', ime[4])
 
 # isecanje lista
+
 #   0       1      2        
 #  sir    mleko   jaja   
 #  -3      -2     -1        
@@ -51,3 +52,14 @@ print ('\npozicije od 1 do 3 je', mojp[1 : 3])  # kada smo napisali 1 : 3 rekli 
 print ('pozicije od 0 do 4 je', mojp[0 : 4]) # od 0 : 4 oznacili smo da zelimo da vidimo sve stvake
 print ('pozicije od 1 do -1 je', mojp[1 : -1]) # 1 je pozicija mleka dok je -1 pozicija jaja 
 print ('Pozicije svih stavki je ', mojp[:]) # kada smo stavili dvotacku ':' rekli smo da zelimo da vidimo sve iz liste 
+
+# isecanje stringa
+
+#   0  1   2   3   4
+#   m  i   l   o   s
+#  -5 -4  -3  -2  -1
+
+print ('\npozicije stringova od 1 do 3 je', ime[1 : 3]) # pozicija 1 = i dok je 3 granica znaci pozicija 2 = l  broj 3 je granica to znaci da prikazuje karaktere do 3 pozicije nama je 3 = o u prevodu to znaci Paython prikazi mi karaktere na poziciji od 1 do 3 ali ne i treci karakter
+print ('pozicije stringova od 3 : je', ime[2:])  # znaci prikazi sve od drugog karaktera do kraja da smo stavili 0 : = to bi dalo kao rezultat ceo string = milos
+print ('pozicije od 1 do -1 je', ime[1 : -1])   # pozicija 1 oznacava poziciju i dok -1 je granica  i prikazuje nam tako da 1 : -1 oznacava ilo 
+print ("oznaka ':' daje", ime[:]) # prikazuje nam ceo string
