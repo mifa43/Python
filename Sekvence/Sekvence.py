@@ -71,3 +71,6 @@ print ('\nPozicija ::1 je', mojp[::1])  # oznacava sve
 print ('Pozicija ::2 je', mojp[::2])  # oznacava prvu stavku i trecu
 print ('Pozicija ::3 je', mojp[::3])  # oznacava prvu i poslednju
 print ('\nPozicija ::-1 je', mojp[::-1])  # oznacava sve ali redosledom odpozadi
+
+# Primetite da kada je vrednost koraka 2, dobijamo stavke sa pozicija 0, 2, ... Kada je korak veličine 3, dobijamo stavke sa pozicija 0, 3, itd..
+# Prednost STRINGOVA je da mozemo na isti nacin da pristupimo tupleima,listama i stringovima
