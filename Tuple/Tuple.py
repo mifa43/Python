@@ -12,7 +12,7 @@ print ('ovo je moj primer tupla')
 nab = 'ekseri','srafovi','matice','farba' # zagrade nisu obavezne ali je bolje sa zagradama kako bi izbegli dvosmislenost jel da smo napisali ('a','b','c') ovo prikazuje da su u zagradama tri karaktera a b c 
                                             # ( ('a','b','c') ) - ovo govori da je rec o tupleu koji sadrzi tri karaktera a b c 
 nab_jos = ('daske','cekic','sravciger', nab)
-print ('Broj stvari koje mi trebaju da napravim kucicu za pse je', len(nab_jos)) #kada smo dodali tuple nab len funkcija nam je prebrojala 4 u nab_jos jel i zajsta jesu 4 stavvke bez obzira sto se u nab nalaze jos 3 stavke
+print ('Broj stvari koje mi trebaju da napravim kucicu za pse je', len(nab_jos)) #kada smo dodali tuple nab len funkcija nam je prebrojala 4 u nab_jos jel i zajsta jesu 4 stavke bez obzira sto se u nab nalaze jos 3 stavke
 print ('Ovo su stvari koje mi trebaju', nab_jos) # kada smo u nab_jos dodali nab prikazuje i njegove stavke 
 print ('Prvo mi trebaju',nab_jos[0])    # kada smo definisali broj u [] mi smo oznacili brojem poziciju stavke koju zelimo da prikazemo
 print ('Poslednja stvar koja mi treba za kucicu je', nab_jos [3][3])  #kada smo kod nab_jos u [3] dodali broj oznacili smo poziciju tj. 3 to je tuple nab a u drugoj [3] oznacili smo cetvrtu poziciju u nabu tj. farbu koja se prikazuje
