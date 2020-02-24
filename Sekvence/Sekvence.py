@@ -63,3 +63,4 @@ print ('\npozicije stringova od 1 do 3 je', ime[1 : 3]) # pozicija 1 = i dok je 
 print ('pozicije stringova od 3 : je', ime[2:])  # znaci prikazi sve od drugog karaktera do kraja da smo stavili 0 : = to bi dalo kao rezultat ceo string = milos
 print ('pozicije od 1 do -1 je', ime[1 : -1])   # pozicija 1 oznacava poziciju i dok -1 je granica  i prikazuje nam tako da 1 : -1 oznacava ilo 
 print ("oznaka ':' daje", ime[:]) # prikazuje nam ceo string
+# Napomena : Prvi broj (pre dvotačke) u operaciji isecanja, se odnosi na poziciju odakle isečak počinje, a drugi broj (posle dvotačke) pokazuje gde će se zaustaviti sečenje tj. granica
