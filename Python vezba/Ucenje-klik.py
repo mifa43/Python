@@ -39,6 +39,7 @@ while True:
         print ('\nZdravo ja sam Python treba ti opis programa ?')
         print("\nDa / Ne")    # koristi veliko slovo kako bi radilo
         pomoc = input("\n")
+
         if pomoc == "Da":
             print ('Ja sam program koji sluzi za lakse ucenje')
             print ('Ono sto ja radim jeste otvaranje stvari koje ti trebaju za ucenje:')
@@ -48,13 +49,17 @@ while True:
             print ('Mogu da otvorim Youtube ako odaberes opciju 3.')
             print ('******************************************************************')
             print ('Verzija-0.1')
+
         s = int (input ("\n\nUkucaj 5 da bi izaso: "))
         if s == 5:
             break
+
         else:
             print ('Zasto si odabrao opis ako ne zlis da saznas opis programa ?!')
+
     else:
         print ('Dozvoljeno je unositi samo brojeve koji su izrazeni')
+
         s = int (input ("\n\nUkucaj 5 da bi izaso: "))
         if s == 5:
             break
