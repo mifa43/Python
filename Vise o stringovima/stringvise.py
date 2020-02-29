@@ -1,4 +1,4 @@
-ime = 'Swaroop'  # ovo je prvi string objekt
+ ime = 'Swaroop'  # ovo je prvi string objekt
 
 if ime.startswith('Swa'):    
     print('Da, string pocinje sa "Swa"')
@@ -28,3 +28,7 @@ print (gradovi)
 print (dodatak.join(gradovi)) # ovde smo dodatku dali metodu join i on izmedju svake stavke u listi dodaje da divan grad osim na poslednju ali da je tu cetvrta stavka 
 #dodao bi i nisu ali opet izostavio poslednju 
 # join metoda spaja stringove koje mi zelimo mozemo da dodamo i _*_ za razdvajane
+# REZIME: Ispitivali smo detaljno, različite strukture podataka ugrađene u Python.
+#  Ove strukture podataka će biti od suštinskog značaja za pisanje programa neke razumne veličine.
+#  Sada kada imamo puno osnovnih znanja o Python-u, sledeće što ćemo razmatrati je kako da osmislimo i napišemo neki koristan Python program.
+
