@@ -34,7 +34,7 @@ while True:
         s = int (input ("\n\nUkucaj 5 da bi izaso: "))
         if s == 5:
             break
-
+        
     elif solucija == 4:
         print ('\nZdravo ja sam Python treba ti opis programa ?')
         print("\nDa / Ne")    # koristi veliko slovo kako bi radilo
