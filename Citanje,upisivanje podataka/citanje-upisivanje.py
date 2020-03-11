@@ -14,7 +14,7 @@ fajl.write("\tZdravo pajton sam pise")
 fajl.write("\nOvo je program za back-up") 
 fajl.write("\nUskoro ce biti i datm realizacije") 
 fajl.write("\n\nVerzija-0.1") 
- 
+
 fajl.close() 
 
 #   >!< Program kreira sam fajl i cuva ga za izrazavanje tacne lokacije
