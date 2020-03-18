@@ -21,25 +21,16 @@ def sve(direktorijum):
             lista.append(pch) # a ovde smo u listu zapisali te stavri koje se nalaze u root folderu 
 
         return(lista)   # return vraca listu zabelezenih stringova
-
 src = "C:/src"  # src je odakle se kopiraju fajlovi
-lista = sve(src)    # ovde smo rekli to sto zelimo da prebaci da se nalazi src 
-print(lista)  #< ovo je samo da vididte kako to izgleda 
-
+lista = sve(src)    # ovde smo rekli to sto zelimo da prebaci da se nalazi src  
 print('Konvertujem sa', src)  
-
 for fajl in lista:  # ovde bukv kaze za fajl u listi prikazi liste i to radi 
     print(lista)
-
 os.mkdir("D:/Back-up")  # ova komanda kreira folder na D lokiaciji 
-
 with zipfile.ZipFile("D:/Back-up/zip.zip", 'w') as moj_zip: # ovde kreiramo zip fajl 
-    moj_zip.writestr ("Proces_je_izvrsen.txt","Vreme izvrsavanja Back-up/a je: {0}".format(vreme))  # ovo je napisano izdvojeno kako ne bi doslo do greske ili vise puta ubacio jedan te isti fajl 
-    
+    moj_zip.writestr ("Proces_je_izvrsen.txt","Vreme izvrsavanja Back-up/a je: {0}".format(vreme))  # ovo je napisano izdvojeno kako ne bi doslo do greske ili vise puta ubacio jedan te isti txt dokument 
     # ^--- mojzip writestr pravi txt fajl i upisuje stringove i vreme koje smo definisali gore 
     for fajl in lista:  # ovde kopira se sa c i prebacuje u d za fajl u listi prepisi/kopiraj/zapisi u moj_zip a to je nasa zip arhiva koju smo kreirali 
         moj_zip.write (fajl)
-        
- 
 print("Back-up je uspesno izvrsen, ukupno prebaceno fajlova: {0}".format(len(lista))) # ovo je potvrda 
 # da je sve izvrseno i len nam racuna koliko fajlova imamo prebacenih
