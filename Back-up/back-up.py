@@ -27,8 +27,16 @@ print('Konvertujem sa', src)
 for fajl in lista:  # ovde bukv kaze za fajl u listi prikazi liste i to radi 
     print(lista)
 os.mkdir("D:/Back-up")  # ova komanda kreira folder na D lokiaciji 
-with zipfile.ZipFile("D:/Back-up/zip.zip", 'w') as moj_zip: # ovde kreiramo zip fajl 
-    moj_zip.writestr ("Proces_je_izvrsen.txt","Vreme izvrsavanja Back-up/a je: {0}".format(vreme))  # ovo je napisano izdvojeno kako ne bi doslo do greske ili vise puta ubacio jedan te isti txt dokument 
+with zipfile.ZipFile("D:/Back-up/zip.zip", 'w') as moj_zip: # ovde kreiramo zip fajl
+    print ("\nAko zelis da uneses komentar unesi broj '1' bez komentara unesi '0' ")
+    izbor = int(input('Unesi zeljenu opciju : '))   # ovde trazimo od korisnika da unese neku opciju int oznacava da je dozvoljeno unositi samo brojeve
+    if izbor == 1:
+        komentar = input("\nUnesi komentar : ") # input belezi unesenu rec i upisuje je u txt dokument
+        moj_zip.writestr ("Proces_je_izvrsen.txt","Vreme izvrsavanja Back-up/a je: {0} \nKomentar : {1}".format(vreme, komentar))
+        # ovde smo spojili komentar i txt dokument 
+    else:
+        pass    # pass znaci propustiti/pustiti/dalje znaci ako je input == 0 nastavlja se dalje sve normalno
+        moj_zip.writestr ("Proces_je_izvrsen.txt","Vreme izvrsavanja Back-up/a je: {0}".format(vreme))  # ovo je napisano izdvojeno kako ne bi doslo do greske ili vise puta ubacio jedan te isti txt dokument 
     # ^--- mojzip writestr pravi txt fajl i upisuje stringove i vreme koje smo definisali gore 
     for fajl in lista:  # ovde kopira se sa c i prebacuje u d za fajl u listi prepisi/kopiraj/zapisi u moj_zip a to je nasa zip arhiva koju smo kreirali 
         moj_zip.write (fajl)
