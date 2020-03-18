@@ -1,4 +1,4 @@
-# skalapanje
+# Back-up skripta
 import os 
 from datetime import datetime   # ovo znaci iz modula datetime importuj datetime jel u jednom modulu ima vise submodula koje posebno 
 # mozemo da izvlacimo i koristimo u nasem programu 
@@ -42,5 +42,4 @@ with zipfile.ZipFile("D:/Back-up/zip.zip", 'w') as moj_zip: # ovde kreiramo zip 
         
  
 print("Back-up je uspesno izvrsen, ukupno prebaceno fajlova: {0}".format(len(lista))) # ovo je potvrda 
-# da je sve izvrseno i len nam racuna koliko fajlova imamo prebacenih 
-        
+# da je sve izvrseno i len nam racuna koliko fajlova imamo prebacenih
