@@ -2,7 +2,7 @@
 import os 
 from datetime import datetime   # ovo znaci iz modula datetime importuj datetime jel u jednom modulu ima vise submodula koje posebno 
 # mozemo da izvlacimo i koristimo u nasem programu 
-import zipfile 
+import zipfile # ovo je modul koji kreira zip arhivu
 
 # vreme kada smo importovali vreme upotrebili smo varijablu da zapisemo trenutno vreme nakon toga
 # koristimo varijablu vreme kako bi joj dodali sta da prikaze tj. sate minute i sekunde 
