@@ -26,8 +26,9 @@ lista = sve(src)    # ovde smo rekli to sto zelimo da prebaci da se nalazi src
 print('Konvertujem sa', src)  
 for fajl in lista:  # ovde bukv kaze za fajl u listi prikazi liste i to radi 
     print(lista)
-os.mkdir("D:/Back-up")  # ova komanda kreira folder na D lokiaciji 
-with zipfile.ZipFile("D:/Back-up/zip.zip", 'w') as moj_zip: # ovde kreiramo zip fajl
+
+os.mkdir("D:/Back-up")  # ova komanda kreira folder na D lokiaciji
+with zipfile.ZipFile("D:/Back-up/Kopija.zip", 'w') as moj_zip : # ovde kreiramo zip fajl
     print ("\nAko zelis da uneses komentar unesi broj '1' bez komentara unesi '0' ")
     izbor = int(input('Unesi zeljenu opciju : '))   # ovde trazimo od korisnika da unese neku opciju int oznacava da je dozvoljeno unositi samo brojeve
     if izbor == 1:
