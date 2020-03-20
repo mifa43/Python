@@ -30,4 +30,60 @@ k.vreme()
     # slova koje string cini to znaci da nisu samo stringovi objekti vec i celi brojevi,
     # dec brojevi, cak i same funkcije 
 
-# Ovo je prakticniji primer 
+# Prakticniji primer 
+
+class robot:
+    '''Zdravo ja sam robot sa imenom. '''
+
+    populacija = 0
+
+    def __init__(self, ime):
+        '''Inicijalizacija podataka'''
+        self.ime = ime
+        print('(Inicijalizujem {0})'.format (self.ime))
+
+        robot.populacija += 1
+
+    def __del__(self):
+        '''Greska! Greska! #EROR/101'''
+        print ('{0} je unisten!'.format(self.ime))
+        robot.populacija -= 1
+
+        if robot.populacija == 0:
+            print ('{0} je bio poslednji'.format(self.ime))
+        else:
+            print ('Funkcionalno je jos {0:d} robota'.format (robot.populacija))
+    def zdravo(self):
+        '''Pozdrav homosapijensi. 
+            
+            
+        Da, roboti to mogu!'''
+        print ('Pozdravljam vas stvoritelju, mozete me zvati {0} . '.format (self.ime))
+
+    def koliko():
+        '''Prikazujem trenutnu populaciju robota.'''
+
+        print ('Ima jos {0:d} robota'.format (robot.populacija))
+    koliko = staticmethod(koliko)
+
+
+megabot1 = robot('RP-MP1')
+
+megabot1.zdravo()
+megabot1.koliko()
+
+megabot2 = robot('ARP-P2.0')
+
+megabot2.zdravo()
+megabot2.koliko()
+
+print ("\nRoboti mogu da rade ovde nesto.\n")
+
+print ("Roboti su zavrsili svoj posao sada se unistavaju")
+
+del megabot1
+del megabot2
+
+print ('Svi su unisteni')
+robot.koliko()
+
