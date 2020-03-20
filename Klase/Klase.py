@@ -35,18 +35,23 @@ k.vreme()
 class robot:
     '''Zdravo ja sam robot sa imenom. '''
 
-    populacija = 0
+    # >!< Promenljiva objekta sa istim imenom kao i promenljiva klase ima 
+    # da sakrije promenljivu klase >!<
 
-    def __init__(self, ime):
-        '''Inicijalizacija podataka'''
-        self.ime = ime
+    populacija = 0  # pripada klasi(robot) naziva se promenljiva klase 
+
+    def __init__(self, ime):    # promenljiva (ime) pripada objektu 
+        '''Inicijalizacija podataka'''  # dodeljujemo ime objektu upotrebom self
+        self.ime = ime          # ovo je promenljiva objekta
         print('(Inicijalizujem {0})'.format (self.ime))
 
-        robot.populacija += 1
+        robot.populacija += 1   # promenljiva klase (populacija) pozivamo kao
+            # (robot.populacija) a ne kao self.populacija
 
     def __del__(self):
         '''Greska! Greska! #EROR/101'''
-        print ('{0} je unisten!'.format(self.ime))
+        print ('{0} je unisten!'.format(self.ime)) # promenljivu objekta pozivamo kao
+                # (self.ime) unutar metoda tog objekta
         robot.populacija -= 1
 
         if robot.populacija == 0:
@@ -59,8 +64,12 @@ class robot:
             
         Da, roboti to mogu!'''
         print ('Pozdravljam vas stvoritelju, mozete me zvati {0} . '.format (self.ime))
-
-    def koliko():
+    #@staticmethod
+    def koliko():#< je metoda koja pripada klasi a ne objekatu to znaci
+        # da ga pozivamo kao classmethod  ili staticmethod. 
+        # a mozemo i da koristimo dekoratere koje stavljamo pre def
+        # @staticmethod
+        
         '''Prikazujem trenutnu populaciju robota.'''
 
         print ('Ima jos {0:d} robota'.format (robot.populacija))
@@ -87,3 +96,10 @@ del megabot2
 print ('Svi su unisteni')
 robot.koliko()
 
+# Dekorateri vise: Dekorater mozemo da zamislimo kao precicu za pozivanje eksplicitne komande 
+# varijablama i metodama istog objekta se obracamo sa self ovo se zove 'referenca atributa'
+
+# Clanovi klase su javni osim ako sadrze dve donje crte kao prefiks primer. __privreda
+# Paython ce koristiti specijalno znacenje i efikasno ce je uciniti privatnom promenljivom
+# svaka promenljiva koja se koristi u okviru klase ili objekta pocinje sa dvostrukom
+# donjom crtom a svi ostali nazivi su javni i mogu se koristiti od strane drugih kalsa/objekta
