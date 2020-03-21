@@ -30,8 +30,29 @@ k.vreme()
     # slova koje string cini to znaci da nisu samo stringovi objekti vec i celi brojevi,
     # dec brojevi, cak i same funkcije 
 
-# Prakticniji primer 
+class Recept:
+    def __init__(self, priprema):   
+        self.priprema = priprema# ovo je privatna instanca klase jel ima donje crte rezervisana
+                                #je za klasu (recept). ovde varijabli self dodajemo vrednost (priprema)
 
+    def prilog(self):
+        self.priprema   #ovde smo povezali klasu sa metodom
+        print("""\n{0},Onda mazanje pavlake
+            onda stavljam izrendan kackavalaj, kecap, sunku, masline
+            i malo ljute paprike""".format(self.priprema))  # ovde se poziva klasa kako bi je udruzili
+                                                    # sa (prilog) i dobili smo korak 1. i 2. u ovom delu 
+    def tost(self):
+        print ("Ukljucim toster da se dobro ugreje i pecem 5-8 min moj sendvic\n")
+        print('Vala instant Python-sendvic\n')
+
+R = Recept("Prvo sto radim jeste rasecanje kifle na pola")  # ovde smo klasi dodali string/vrednost
+                                        # i dodali R radi lakseg pozivanja *(da smo u __init__ imali
+                                        # jos jednu vrednost osim pripreme morali bi i njoj da damo 
+                                        # vrednost kako bi radilo primer (recept("ovo je vrednost 1",
+                                        # "ovo je vrednost 2".itd)))
+R.prilog()  #ovako smo pozvali (Recept i prilog)
+R.tost()
+#Prakticniji primer klasa
 class robot:
     '''Zdravo ja sam robot sa imenom. '''
 
@@ -41,7 +62,7 @@ class robot:
     populacija = 0  # pripada klasi(robot) naziva se promenljiva klase 
 
     def __init__(self, ime):    # promenljiva (ime) pripada objektu 
-        '''Inicijalizacija podataka'''  # dodeljujemo ime objektu upotrebom self
+        '''Inicijalizacija podataka'''  # dodeljujemo ime objektu upotrebom varijable self
         self.ime = ime          # ovo je promenljiva objekta
         print('(Inicijalizujem {0})'.format (self.ime))
 
@@ -103,3 +124,4 @@ robot.koliko()
 # Paython ce koristiti specijalno znacenje i efikasno ce je uciniti privatnom promenljivom
 # svaka promenljiva koja se koristi u okviru klase ili objekta pocinje sa dvostrukom
 # donjom crtom a svi ostali nazivi su javni i mogu se koristiti od strane drugih kalsa/objekta
+
