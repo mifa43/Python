@@ -1,5 +1,5 @@
 # help(int)
-#objektivno orjentisano programiranje, klase pocetak, metode objekta
+#objektivno orjentisano programiranje-OOP, klase pocetak, metode objekta
 
 # metod
 class licnost:    # class naredbom stvaramo novu klasu uvucen deo se zove telo klase
