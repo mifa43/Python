@@ -46,3 +46,4 @@ for clan in clanovi:
 # zapocet novio red print() funkcija prikazuje razmak 
 # Vazno: Python nece automacki da poveze konstruktorbazne klase moramo da 
 # ga mi pozovemo na zeljenom mestu 
+# !Nakon kraja knjige vracam se na sva vazna podglavlja kako bi ucvrstio temelj pythona
