@@ -1,6 +1,6 @@
 # Ulaz od korisnika
 
-# U buducem poslu postojace prilika kada cemo zahvtevati da korisnik unosi nesto pomocu inputa
+# U buducem poslu postojace prilika kada cemo zahvtevati da korisnik da unosi nesto pomocu inputa
 # bitno je da znamo dobro  da upravljamo sa njima jel se cesto koriste 
 
 def obrnut(tekst):    
@@ -29,6 +29,7 @@ def radi():
     rec_2 = rec_2.split(',')    # stavlja zarez
     rec_2 = ''.join(rec_2)  # brise zarez i spaja rec
     return rec_2.lower()    # generise sve u mala slova
+                #obde moze i da se koristi .isalpha() funkcija 
 
 if (palindrom(radi())): # provera da li je recenica palindroma 
     print('Da, to je palindrom') 
