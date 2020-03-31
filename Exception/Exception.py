@@ -30,7 +30,7 @@ import time # za treci program
 #     print('Izuzetak_za_kratak_unos: Unos je {0} kraktera dug, ocekivano je najmanje {1}'.format(ex.duzina, ex.najmanje))
 # else:
 #     print('Nijedan Exception nije podignut.')
-
+# >>>>>>>>>>odkomentarisi i ovo <<<<<<<<<<<<<<<
 # Try i Finally
 
 try:    # finally mozemo da koristimo sa try,exception klauzulom kao i sa elsom
@@ -41,7 +41,7 @@ try:    # finally mozemo da koristimo sa try,exception klauzulom kao i sa elsom
             break
         print(linija, end = ' ')
         time.sleep(2)   # funkcija iz time modula nakon svake linije odspava 2 sekunde
-except KeyboardInterrupt:   # upotrebi ctrl + c
+except KeyboardInterrupt:   # upotrebi ctrl + c ima i #EOFError ctrl + d = Windows korisnik
                         # kada smo pokrenuli KeyboardInterrupt program se prekida 
                         # ali bez obzira na to fajl koji smo citali se zayvara jer
                         # se nalazi u finally klauzoli i izvrsava se i objekat datoteke

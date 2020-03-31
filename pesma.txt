@@ -1,0 +1,4 @@
+    Programiranje je zabavno,
+    ali kada otkucas nekoliko linija 
+    u Pyhonu shvatas da je to ljubav. 
+        #STAYATHOME WITH PYTHON !
