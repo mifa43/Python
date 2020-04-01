@@ -13,23 +13,23 @@ import time # za treci program
 # >>>>Odkomentarisi gornji program<<<<<
 
 # Raise
-# class Izuzetak_za_kratak_unos(Exception):# Ovde smo stvorili sopstveni izuzetak'exception'
-#     '''Klasa definisana od korisnika'''
-#     def __init__(self, duzina, najmanje):# duzina je duzina unesenog teksta
-#         Exception.__init__(self)        # najmanja je najmanja dozvoljena duzina unosa
-#         self.duzina = duzina
-#         self.najmanje = najmanje
-# try:
-#     unos = input('Unesi nesto ---> ')
-#     if len(unos) < 3:
-#         raise Izuzetak_za_kratak_unos(len(unos), 3)# greska u koliko je unos manji od 3 
-#         # Ovde moze da bude definisano i nesto drugo
-# except EOFError:
-#     print('Zasto si mi uradio EOF?')
-# except Izuzetak_za_kratak_unos as ex:
-#     print('Izuzetak_za_kratak_unos: Unos je {0} kraktera dug, ocekivano je najmanje {1}'.format(ex.duzina, ex.najmanje))
-# else:
-#     print('Nijedan Exception nije podignut.')
+class Izuzetak_za_kratak_unos(Exception):# Ovde smo stvorili sopstveni izuzetak'exception'
+    '''Klasa definisana od korisnika'''
+    def __init__(self, duzina, najmanje):# duzina je duzina unesenog teksta
+        Exception.__init__(self)        # najmanja je najmanja dozvoljena duzina unosa
+        self.duzina = duzina
+        self.najmanje = najmanje
+try:
+    unos = input('Unesi nesto ---> ')
+    if len(unos) < 3:
+        raise Izuzetak_za_kratak_unos(len(unos), 3)# greska u koliko je unos manji od 3 
+        # Ovde moze da bude definisano i nesto drugo
+except EOFError:
+    print('Zasto si mi uradio EOF?')
+except Izuzetak_za_kratak_unos as ex:
+    print('Izuzetak_za_kratak_unos: Unos je {0} kraktera dug, ocekivano je najmanje {1}'.format(ex.duzina, ex.najmanje))
+else:
+    print('Nijedan Exception nije podignut.')
 # >>>>>>>>>>odkomentarisi i ovo <<<<<<<<<<<<<<<
 # Try i Finally
 
