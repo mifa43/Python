@@ -24,3 +24,16 @@ print(type(my_tuple))
 
 my_tuple = ("zdravo",)  # a ovako napisano sa zarezom na tuple
 print(type(my_tuple))   # ovo se koristi ako zelimo tuple sa jednom stavkom
+
+# Igranje sa tuplama
+def detalj_greske():
+    return(2, 'drugi detalj greske')    # primetimo da imamo dve vrednosti
+brojgreske, stringgreske = detalj_greske()  # broj grske je = 2 string greske = string
+print(brojgreske)
+print(stringgreske)
+
+a, *b = [1, 2, 3, 4, 5] # Tumaci se kao tuple sa dve vrednosti a, b
+                        # ako zelimo da se a tumaci kao a,(sve ostalo) samo treba da koristimo a*
+print('\n', a) #parametru a je dodata vrednost 1 
+print(b)    # dok je b tuple
+
