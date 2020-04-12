@@ -125,3 +125,12 @@ robot.koliko()
 # svaka promenljiva koja se koristi u okviru klase ili objekta pocinje sa dvostrukom
 # donjom crtom a svi ostali nazivi su javni i mogu se koristiti od strane drugih kalsa/objekta
 
+# POSEBNI METODI
+
+# __init__(self, ...) - Ova metoda se poziva baš kada se novokreirani objekat vraća za upotrebu.
+# __del__(self) - Pozvia se neposredno pre nego što je objekat uništen.
+# __str__(self) - Poziva se kada koristimo print funkciju ili str() funkciju.
+# __lt__(self, drugi) - Poziva se kada se koristi "manje od" operator (<). Slično ovom, postoje 
+# posebni metodi za sve operatere (+, >, itd).
+# __getitem__(self, kljuc) - Poziva se kada se koristi x[kljuc] operacija indeksiranja. 
+# __len__(self) - Poziva se kada se koristi ugrađena len() funkcija za sekvence objekata. 
