@@ -5,6 +5,13 @@ assert len(moja_lista) >= 1
 moja_lista.pop()
 print(moja_lista)
 
+# primer kako funkcionise assert naredba
+x = "Zdravo"
+
+assert x == "Zdravo"
+
+assert x == "Pozdrav"
+
 # assert naredba se koristi kada zelimo da ptvrdimo da li je nesto tacno ili ne
 # ako ste sigurni da ćete imati barem jedan element u listi koju koristite,
 #  a želite da proverite, i da podignete grešku ako to nije istina, onda 
