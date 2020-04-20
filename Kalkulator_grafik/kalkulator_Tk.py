@@ -8,7 +8,7 @@ t.geometry('450x550')
 operatori = ""  #promenljiva koja hvata unos sa dugmeta
 hvata_unos = StringVar()  # upisuje oznaku na dugmetu u ekran za tekts Entery
 
-# operatori = operatori +string(naznacen u broju ako je u buttonu 1 pise broj 1)
+# operatori = operatori +string(naznacen u broju ako je u buttonu pise 1 broj 1)
 # hvata_unos setuje operatori tj. simbol koji je pritisnut i upisuje u skrin 
 # oper
 def pisanje(broj):  # parametar broj menjamo za oznaku dugmeta i ispisuje oznaku dugmeta
@@ -32,7 +32,7 @@ def racunaj(hvata_unos):
 
 def brisanje():
     global operatori
-    operatori = "" 
+    operatori = ""  # opcija za brisanje koja kada se klikne setuje prazno mesto operatori = ""
     hvata_unos.set("")
     
 
