@@ -9,7 +9,7 @@ print (minimum(12, 12))
 print(minimum.__doc__)
 # docstring 
 def prikazMaksimuma(x, y):
-    '''kako ovo koji kurac radi ?
+    '''kako ovo radi ?
     moze u vise redova 
     ovo je super'''
     x = int(x) 
