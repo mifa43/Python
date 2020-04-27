@@ -10,7 +10,7 @@ class Testbrzine:   # kreiranje klase i njenih objekta
     global speed
 
     def __init__(self, brzina_download, brzina_upload, brzina_ping):    # privatna instanca klase sa promenljivama  self je kljucna rec + promenljiva npr(brzina_download..)
-        self.download = brzina_download     # ovako se sa kljucnom reci self dodeljuje promenljiva
+        self.brzina_download = brzina_download     # ovako se sa kljucnom reci self dodeljuje promenljiva
         self.brzina_upload = brzina_upload
         self.brzina_ping = brzina_ping
 
