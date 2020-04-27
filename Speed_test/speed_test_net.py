@@ -24,7 +24,7 @@ class Testbrzine:   # kreiranje klase i njenih objekta
         self.brzina_ping = speed.results.ping   # rezultat iz liste
 
         print("Download : {0}\nUpload : {1}\nPing : {2}".format(self.brzina_download, self.brzina_upload, self.brzina_ping))    # ispisujemo na ekranu vrednosti koje smo dobili
-        
+
 t = Testbrzine('brzina_download', 'brzina_upload', 'brzina_ping')   # sa t smo skratili nas kod kako bi smo ga lakse pozvali. u Testbrzine ima 3 argumenta(brzina_download, brzina_upload, brzina_ping) i obavezno je da ih definisemo pri pozivanju klase
-t.brzina_interneta() # ovako smo spojili privatnu klasu sa metodom
+t.brzina_interneta() # ovako smo spojili privatnu klasu sa metodom 
 
