@@ -17,5 +17,5 @@ fajl.write("\n\nVerzija-0.1")
 
 fajl.close() 
 
-#   >!< Program kreira sam fajl i cuva ga za izrazavanje tacne lokacije
-#       mozemo upotrebiti modul shutill >!<
+# >!< Program kreira sam fajl i cuva ga za izrazavanje tacne lokacije
+#     mozemo upotrebiti modul shutill >!<
