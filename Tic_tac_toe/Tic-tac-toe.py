@@ -56,7 +56,7 @@ b = Button(win, text=" ", font = ('Times 10 bold'), width=20, height=10, command
                                                                                                     # i sirinu dugmeta i command koji smo povezali sa def provera lambda jos nisam stigo
                                                                                                     # do tog dela u knjizi
 b.pack()
-     # ovo je lokacija gde se nalazi dugme u prozoru 
+b.place(x = 105, y = 30)   # ovo je lokacija gde se nalazi dugme u prozoru 
 
 b1 = Button(win, text=" ", font = ('Times 10 bold'), width=20, height=10, command=lambda:provera(b1))
 b1.pack()
