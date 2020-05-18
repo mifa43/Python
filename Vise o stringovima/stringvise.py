@@ -1,4 +1,4 @@
- ime = 'Swaroop'  # ovo je prvi string objekt
+ime = 'Swaroop'  # ovo je prvi string objekt
 
 if ime.startswith('Swa'):    
     print('Da, string pocinje sa "Swa"')
