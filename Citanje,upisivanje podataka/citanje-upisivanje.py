@@ -12,7 +12,7 @@ fajl = open("test.txt","w")
 
 fajl.write("\tZdravo pajton sam pise") 
 fajl.write("\nOvo je program za back-up") 
-fajl.write("\nUskoro ce biti i datm realizacije") 
+fajl.write("\nUskoro ce biti i datum realizacije") 
 fajl.write("\n\nVerzija-0.1") 
 
 fajl.close() 
