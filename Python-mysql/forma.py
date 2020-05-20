@@ -22,9 +22,49 @@ except Error as e:  # ako nije uspela konekcija prikazuje gresku
     print("Error greska pri konektovanju", e)
 #endregion
 
+klik = True
+
+def log_in():       # definicija  novog tkinter prozora kako bi se setovala pozadinska slika mora prethodni prozor da se zatvori
+    global klik
+    
+    if klik == True:
+        tik.destroy()   # ovako se zatvara prozor
+        klik = False
+
+    nov = Tk(className = "Log in")
+    nov.geometry("600x350+680+200")
+    image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
+    photo = ImageTk.PhotoImage(image)   
+    label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
+    label.image = photo
+
+    unos_mail = Entry(nov, width = 35)
+    unos_mail.place(x = 210, y = 140)
+    unos_mail_txt = Label(nov, text = "Enter email", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
+    unos_mail_txt.place(x = 210, y = 115)
+
+    unos_lozinka = Entry(nov, width = 35, show = "*")
+    unos_lozinka.place(x = 210, y = 190)
+    unos_lozinka_txt = Label(nov, text = "Enter password", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
+    unos_lozinka_txt.place(x = 210, y = 165)
+
+    reset = Button(nov, text = "Forgot password ?", bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
+    reset.place(x = 430, y = 10)
+
+    sign_in = Button(nov, text = "Sign in", bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
+    sign_in.place(x = 280, y = 230)
+
+
+    label.pack()
+
+
+
+   
+    nov.mainloop()
+
 #region Tkinter window
 tik = Tk(className = "Registration")
-tik.geometry('1150x800')
+tik.geometry('1150x800+450+150')
 #endregion
 #region Tkinter image
 image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
@@ -113,7 +153,8 @@ ime_tekst.place(x = 500, y = 377)
 prijava = Button(tik, text = "Create accaunt", command = uzmi_info, bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"), pady=3, padx=5)
 prijava.place(x = 675, y = 430)
 
-
+log = Button(tik, text = "Login", command = log_in, bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"), pady=3, padx=5 )
+log.place(x = 1050, y = 10)
 
 cek_box = Checkbutton(tik, text = "Send news about service,\n offers and products to E-mail.", variable = CheckVar1 ,onvalue = 1, offvalue = 0, bg = "#ffffff", fg="black", font = ("Helvetica", 7, "bold italic"))
 cek_box.place(x = 500, y = 430)
