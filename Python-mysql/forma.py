@@ -52,7 +52,7 @@ def uzmi_info():
     info_password = lozinka.get()
     reinfo_password = ponavljanje_lozinke.get()
 
-    if len(info_korisnik and info_prezime and info_password  and reinfo_password and info_email) == 0:
+    if len(info_korisnik and info_prezime and info_password  and reinfo_password and info_email) == 0:          # ovo su uslovi koji moraju da se izvrse kako bi se uspesno registrovali i bili upisani u bazu 
         tkinter.messagebox.showinfo("Warning","It is not possible to create an account without value !")
     elif len(info_korisnik) <= 3:
         tkinter.messagebox.showinfo("Warning","Less than 3 characters per username are allowed !")
@@ -65,7 +65,6 @@ def uzmi_info():
     elif info_password == reinfo_password or reinfo_password == info_password:
         #region Write to mysql
         query  = povezivanje.cursor()   # ovo je prozor u kome se pise upit njega selektuje iz baze Registracija
-        #upisivanje u mysql bazu
         upit = "INSERT INTO korisnik (ime, prezime, adresa, lozinka) VALUES (%s,%s,%s,%s)"  # ovako se upisuje vrednost u kolone %s - oznacava kolone
         vrednost = (info_korisnik, info_prezime, info_email, info_password)   # ovo su vrednosti koje se upisuju
         query.execute(upit, vrednost)    # promenljive se stavljaju u execute
