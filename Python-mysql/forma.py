@@ -31,19 +31,62 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
         tik.destroy()   # ovako se zatvara prozor
         klik = False
 
+
     nov = Tk(className = "Log in")
     nov.geometry("600x350+680+200")
     image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
     photo = ImageTk.PhotoImage(image)   
     label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
     label.image = photo
+    label.pack()
 
-    unos_mail = Entry(nov, width = 35)
+    mail_prov = StringVar()
+    pass_prov = StringVar()
+
+    def sign_prov ():
+        prov_mail = unos_mail.get()
+        prov_pass = unos_lozinka.get()
+
+        # print(prov_mail)
+        # print(prov_pass)
+
+        #region Write to mysql
+        query  = povezivanje.cursor()
+        sql_select = "select adresa from registracija.korisnik WHERE adresa = '{0}'".format(prov_mail)      # provera za email da li se nalazi u nasoj bazi
+        query.execute(sql_select) #sql_pass
+        rekord = query.fetchall()
+        for row in rekord:
+            if prov_mail == row[0]:
+                print("adresa = ", row[0])
+            else:
+                tkinter.messagebox.showinfo("Warning","Incorect email !")
+
+        query  = povezivanje.cursor()
+        sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}'".format(prov_pass)      # provera za lozinku da li se nalazi u nasoj bazi
+        query.execute(sql_pass) #sql_pass
+        rekord = query.fetchall()
+        for row in rekord:
+            if prov_pass == row[0]:
+                # print("password = ", row[0])
+                tkinter.messagebox.showinfo("Successfully","Successfully sign in !")
+            else:
+                tkinter.messagebox.showinfo("Warning","Incorect password !")
+        #endregion
+        
+
+      
+        
+
+
+        mail_prov.set("")
+        pass_prov.set("")
+    #region forms for sign in
+    unos_mail = Entry(nov, width = 35, textvariable = mail_prov)
     unos_mail.place(x = 210, y = 140)
     unos_mail_txt = Label(nov, text = "Enter email", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
     unos_mail_txt.place(x = 210, y = 115)
 
-    unos_lozinka = Entry(nov, width = 35, show = "*")
+    unos_lozinka = Entry(nov, width = 35, show = "*", textvariable = pass_prov)
     unos_lozinka.place(x = 210, y = 190)
     unos_lozinka_txt = Label(nov, text = "Enter password", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
     unos_lozinka_txt.place(x = 210, y = 165)
@@ -51,11 +94,14 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
     reset = Button(nov, text = "Forgot password ?", bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
     reset.place(x = 430, y = 10)
 
-    sign_in = Button(nov, text = "Sign in", bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
+    sign_in = Button(nov, text = "Sign in", command = sign_prov, bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
     sign_in.place(x = 280, y = 230)
+    #endregion
 
-
-    label.pack()
+            # 1. provera da li se korisnik nalazi u bazi
+            # 2. ako se nalazi treba da prikaze da postoji 
+            # 3. ako postoji prikazuje lozinku i mail
+            # 4. potreban sistem provere postojecih 
 
 
 
