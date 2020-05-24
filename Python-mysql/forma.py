@@ -23,6 +23,7 @@ except Error as e:  # ako nije uspela konekcija prikazuje gresku
 #endregion
 
 klik = True
+mail_suc = 0
 
 def log_in():       # definicija  novog tkinter prozora kako bi se setovala pozadinska slika mora prethodni prozor da se zatvori
     global klik
@@ -46,27 +47,62 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
     def sign_prov ():
         prov_mail = unos_mail.get()
         prov_pass = unos_lozinka.get()
-
-        query  = povezivanje.cursor()
-        sql_select = "select adresa from registracija.korisnik WHERE adresa = '{0}'".format(prov_mail)      # provera za email da li se nalazi u nasoj bazi
-        query.execute(sql_select)   # izvrsava upit
-        rekord = query.fetchall()   # vraca sve redove iz upita
-        for i in rekord:         
-            if prov_mail == i[0]:
-                print("mail = ", i[0])
+        
+        def sign_prov_mail():
+            global mail_suc
+            try:
                 query  = povezivanje.cursor()
-                sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}'".format(prov_pass)      # provera za lozinku da li se nalazi u nasoj bazi
+                sql_select = "select adresa from registracija.korisnik WHERE adresa = '{0}'".format(prov_mail)      # provera za email da li se nalazi u nasoj bazi
+                query.execute(sql_select)   # izvrsava upit
+                rekord = query.fetchall()   # vraca sve redove iz upita
+                mail = ''.join(rekord[0])
+
+                if prov_mail == mail:
+                    print("mail = {0}".format(mail))
+                    mail_suc = 1
+                else:
+                    pass
+            except:
+                print("Mail is wrong")
+                tkinter.messagebox.showinfo("Warning","Incorect mail !")
+                mail_suc = 0
+            return mail_suc
+        def sign_prov_pass():
+            try:
+                query  = povezivanje.cursor()
+                sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}' AND adresa = '{1}'".format(prov_pass, prov_mail)      # provera za lozinku da li se nalazi u nasoj bazi
                 query.execute(sql_pass) 
-                rekord = query.fetchall()   # vraca sve redove iz baze..                ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
-                                                                                                    #proverava da li postoji u bazi 
-                for red in rekord: 
-                    if prov_pass == red[0]:
-                        print("password = ", red[0])
-                        tkinter.messagebox.showinfo("Successfully","Successfully sign in !") 
-                    else:
-                        tkinter.messagebox.showinfo("Warning","Incorect password !")
-            else:
-                tkinter.messagebox.showinfo("Warning","Incorect email !")
+                password = query.fetchall()   # vraca sve redove iz baze..                ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
+                                                                                                        #proverava da li postoji u bazi 
+                password = ''.join(password[0])
+                if prov_pass == password and mail_suc == 1:
+                    print("password = ", password)
+                    tkinter.messagebox.showinfo("Successfully","Successfully sign in !") 
+                else:
+                    pass
+            except:
+                print("Password is wrong")
+                tkinter.messagebox.showinfo("Warning","Incorect password !")
+        sign_prov_mail()
+        sign_prov_pass()
+        # mifa43kotez@gmail.com
+        # for i in rekord:         
+        #     if prov_mail == i[0]:
+        #         print("mail = ", i[0])
+        #         query  = povezivanje.cursor()
+        #         sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}'".format(prov_pass)      # provera za lozinku da li se nalazi u nasoj bazi
+        #         query.execute(sql_pass) 
+        #         rekord = query.fetchall()   # vraca sve redove iz baze..                ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
+        #                                                                                             #proverava da li postoji u bazi 
+        #         for red in rekord: 
+        #             if prov_pass == red[0]:
+        #                 print("password = ", red[0])
+        #                 tkinter.messagebox.showinfo("Successfully","Successfully sign in !") 
+        #             else:
+        #                 print("Password is wrong")
+        #                 tkinter.messagebox.showinfo("Warning","Incorect password !")
+        #     else:
+        #         tkinter.messagebox.showinfo("Warning","Incorect email !")
             # 1. sredi izbacivanje greske za pogresan mail i pass
             # 2. dodaj nesto tipa s = succesefully return s za oepn novog prozora nakon logovanja ako je mail i pass postojecci
             # 3. napravi prozor za reset passa
