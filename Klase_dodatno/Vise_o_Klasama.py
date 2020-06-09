@@ -4,7 +4,7 @@ class ClanoviSkole: # u clnanoviskole mozemo da dodamo novo polje npr. ID u klas
     #promene unutar pod tipova ne uticu na druge pod tipove prednost je 
     # sto moze da se odnosi objekat profesora ili objekat studenta
     # ovo je korisno za npr prebrojavanje clanova skole ovo se zove "Polimorfizam"
-    #
+    
     '''Predstavlja bilo kog clana skole'''    
     def __init__(self, ime, godine):        
         self.ime = ime        
