@@ -72,8 +72,8 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 query  = povezivanje.cursor()
                 sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}' AND adresa = '{1}'".format(prov_pass, prov_mail)      # provera za lozinku da li se nalazi u nasoj bazi
                 query.execute(sql_pass) 
-                password = query.fetchall()   # vraca sve redove iz baze..                ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
-                                                                                                        #proverava da li postoji u bazi 
+                password = query.fetchall()   # vraca sve redove iz baze..      ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
+                                                                                        #proverava da li postoji u bazi 
                 password = ''.join(password[0])
                 if prov_pass == password and mail_suc == 1:
                     print("password = ", password)
