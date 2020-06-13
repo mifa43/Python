@@ -55,11 +55,11 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 sql_select = "select adresa from registracija.korisnik WHERE adresa = '{0}'".format(prov_mail)      # provera za email da li se nalazi u nasoj bazi
                 query.execute(sql_select)   # izvrsava upit
                 rekord = query.fetchall()   # vraca sve redove iz upita
-                mail = ''.join(rekord[0])
+                mail = ''.join(rekord[0]) # rekord vraca mail kao tuplu sa joinok dobijamo mail iz baze
 
                 if prov_mail == mail:
                     print("mail = {0}".format(mail))
-                    mail_suc = 1
+                    mail_suc = 1        # ako je postojeci vrednost je 1 
                 else:
                     pass
             except:
@@ -75,7 +75,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 password = query.fetchall()   # vraca sve redove iz baze..      ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
                                                                                         #proverava da li postoji u bazi 
                 password = ''.join(password[0])
-                if prov_pass == password and mail_suc == 1:
+                if prov_pass == password and mail_suc == 1: # samo ako je sifa istako kao u bazi i ako je mail = 1 onda je uspesno
                     print("password = ", password)
                     tkinter.messagebox.showinfo("Successfully","Successfully sign in !") 
                 else:
