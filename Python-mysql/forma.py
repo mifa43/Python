@@ -85,24 +85,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 tkinter.messagebox.showinfo("Warning","Incorect password !")
         sign_prov_mail()
         sign_prov_pass()
-        # mifa43kotez@gmail.com
-        # for i in rekord:         
-        #     if prov_mail == i[0]:
-        #         print("mail = ", i[0])
-        #         query  = povezivanje.cursor()
-        #         sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}'".format(prov_pass)      # provera za lozinku da li se nalazi u nasoj bazi
-        #         query.execute(sql_pass) 
-        #         rekord = query.fetchall()   # vraca sve redove iz baze..                ^--- ovim se suzava krug pretrage tako sto uneseni mail ili  pass
-        #                                                                                             #proverava da li postoji u bazi 
-        #         for red in rekord: 
-        #             if prov_pass == red[0]:
-        #                 print("password = ", red[0])
-        #                 tkinter.messagebox.showinfo("Successfully","Successfully sign in !") 
-        #             else:
-        #                 print("Password is wrong")
-        #                 tkinter.messagebox.showinfo("Warning","Incorect password !")
-        #     else:
-        #         tkinter.messagebox.showinfo("Warning","Incorect email !")
+        
             # 1. sredi izbacivanje greske za pogresan mail i pass
             # 2. dodaj nesto tipa s = succesefully return s za oepn novog prozora nakon logovanja ako je mail i pass postojecci
             # 3. napravi prozor za reset passa
