@@ -4,7 +4,9 @@ from tkinter import *
 import tkinter.messagebox
 from tkinter import ttk
 from PIL import ImageTk,Image   # pomocu PIL modula mozemo da ubacimo sliku u Tkinter prozor
-import os
+from tkinter.ttk import Progressbar, Style      # modul za popunjujucu liniju
+import time
+from win10toast import ToastNotifier # modul za notifikaciju destopa
 
 __version__ = "0.1"     # ovo je oznaka za verziju programa
 
@@ -24,6 +26,55 @@ except Error as e:  # ako nije uspela konekcija prikazuje gresku
 
 klik = True
 mail_suc = 0
+cor = 0
+a = 1
+
+def dobro_dosao():
+    global klik
+    sec = Tk(className = "Welcome")
+    sec.geometry("920x800+500+100")
+    image = Image.open("C:src\\bg.jpg") 
+    photo = ImageTk.PhotoImage(image)   
+    label = Label(image = photo)    
+    label.image = photo
+    label.pack()
+
+  
+    
+    #region progres bar
+    # PROGRES BAR : nadji nacin kako da ga startujes kada se otvori prozor 
+    #Problem je u tome sto se prozor koci i bar se startuje pre otvaranja prozora zbog sleepa traje 5-6 sec kada dodje do 100% tek tada se otvara prozor
+    # s = Style(sec)
+    # s.layout("LabeledProgressbar",
+    #     [('LabeledProgressbar.trough',
+    #     {'children': [('LabeledProgressbar.pbar',
+    #                     {'side': 'left', 'sticky': 'ns'}),
+    #                     ("LabeledProgressbar.label",
+    #                     {"sticky": ""})],
+    #         'sticky': 'nswe'})])
+    # p = Progressbar(sec, orient= HORIZONTAL, length=200, mode="determinate",style="LabeledProgressbar" )
+    # p.place(x = 350, y = 100)
+    # s.configure("LabeledProgressbar", text="0 %      ")
+    # def bar():
+        
+    #     if a == 1: 
+    #         for i in range (101):
+    #             time.sleep(0.05)
+    #             p["value"] = i
+    #             s.configure("LabeledProgressbar", text="{0} %      ".format(i))
+    #             sec.update_idletasks()
+                
+    #         p["value"] = 0
+    #     else:
+    #         tkinter.messagebox.showinfo("Warning","Some dataType is gone wrong!")
+    #endregion  
+    # ovo cu naknadno da dodam prvo moram da smislim nacin gde da ga smestim i kako da ga aktiviram a da se ne desava greska 
+  
+
+    
+    sec.mainloop()
+    
+    
 
 def log_in():       # definicija  novog tkinter prozora kako bi se setovala pozadinska slika mora prethodni prozor da se zatvori
     global klik
@@ -45,11 +96,15 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
     pass_prov = StringVar()
 
     def sign_prov ():
+        
         prov_mail = unos_mail.get()
         prov_pass = unos_lozinka.get()
-        
+
+
         def sign_prov_mail():
+            global cor
             global mail_suc
+            
             try:
                 query  = povezivanje.cursor()
                 sql_select = "select adresa from registracija.korisnik WHERE adresa = '{0}'".format(prov_mail)      # provera za email da li se nalazi u nasoj bazi
@@ -67,7 +122,9 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 tkinter.messagebox.showinfo("Warning","Incorect mail !")
                 mail_suc = 0
             return mail_suc
+
         def sign_prov_pass():
+            global klik
             try:
                 query  = povezivanje.cursor()
                 sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}' AND adresa = '{1}'".format(prov_pass, prov_mail)      # provera za lozinku da li se nalazi u nasoj bazi
@@ -77,12 +134,36 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 password = ''.join(password[0])
                 if prov_pass == password and mail_suc == 1: # samo ako je sifa istako kao u bazi i ako je mail = 1 onda je uspesno
                     print("password = ", password)
-                    tkinter.messagebox.showinfo("Successfully","Successfully sign in !") 
+                    tkinter.messagebox.showinfo("Successfully","Successfully sign in !")
+                    cor = 1 # ako su podaci tacni onda je cor = 1 i ulazi u blok zatvaranja programa
+                   # ako su podaci ne postojeci nece uci u petlju terminal prikazuje gresku o nepoznatoj variabli ako je uso u petlju radi bez greske https://stackoverflow.com/questions/15921203/how-to-create-a-system-tray-popup-message-with-python-windows
+                   
                 else:
                     pass
             except:
                 print("Password is wrong")
                 tkinter.messagebox.showinfo("Warning","Incorect password !")
+
+            def notif():
+                try:
+                    notifikacija = ToastNotifier()
+                    notifikacija.show_toast("New mesage from GuiApp !",         # naslov notifikacije
+                        "A new upgrade is an available click for more information.",  # poruka 
+                        duration=7) # duzina trajanja
+                except:
+                    print("Something is wrong")
+            
+            if cor == 1:        # uslov za unistenje prozora
+                nov.destroy()
+                if cor == 1:        # otvaranje novog prozora
+                    dobro_dosao()
+                    pass
+                    notif()     # nakon napustanja programa dobija se informacija o novom apgrejdu
+            else:
+                print("Something is wrong")
+            
+                    
+
         sign_prov_mail()
         sign_prov_pass()
         
