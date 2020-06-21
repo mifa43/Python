@@ -1,5 +1,5 @@
 import mysql.connector  # mysql modul za konektovanje sa python skriptom
-from mysql.connector import Error   # modul koji nam pokazuje greske koje se javljaju pri pisanju upit
+from mysql.connector import Error   # modul koji nam pokazuje greske koje se javljaju pri pisanju upita
 from tkinter import *
 import tkinter.messagebox
 from tkinter import ttk
@@ -7,21 +7,26 @@ from PIL import ImageTk,Image   # pomocu PIL modula mozemo da ubacimo sliku u Tk
 from tkinter.ttk import Progressbar, Style      # modul za popunjujucu liniju
 import time
 from win10toast import ToastNotifier # modul za notifikaciju destopa
+import smtplib, getpass # modul smtp port
+from email.mime.multipart  import MIMEMultipart
+from email.mime.text  import MIMEText
+import random   # modul za nasumican izbor
+import string   # asci lista karaktera mali i velikih 
+import os
 
 __version__ = "0.1"     # ovo je oznaka za verziju programa
 
-# stao sam kod sredjivanja slike pronadji velicinu 1150x800.
-# pokusaj da sredis tekst da bude abstraktan sredi font i dugmice kao i unos da tekst
-# povezi funkcije sa mysql
-
+mail_sifra = os.getenv('mailsifra')
+dbpass = os.getenv('dbpassword')
 #region Connect to mysql
 try:
     povezivanje = mysql.connector.connect(host='localhost',     # u try blok se nalazi komanda za konektovanje
                                          database='Registracija',
                                          user='root',
-                                         password='zcbqe231rya')  
+                                         password='{0}'.format(dbpass))
 except Error as e:  # ako nije uspela konekcija prikazuje gresku
     print("Error greska pri konektovanju", e)
+    exit()
 #endregion
 
 klik = True
@@ -33,13 +38,12 @@ def dobro_dosao():
     global klik
     sec = Tk(className = "Welcome")
     sec.geometry("920x800+500+100")
+    sec.resizable(False,False)
     image = Image.open("C:src\\bg.jpg") 
     photo = ImageTk.PhotoImage(image)   
     label = Label(image = photo)    
     label.image = photo
     label.pack()
-
-  
     
     #region progres bar
     # PROGRES BAR : nadji nacin kako da ga startujes kada se otvori prozor 
@@ -70,12 +74,8 @@ def dobro_dosao():
     #endregion  
     # ovo cu naknadno da dodam prvo moram da smislim nacin gde da ga smestim i kako da ga aktiviram a da se ne desava greska 
   
-
-    
     sec.mainloop()
     
-    
-
 def log_in():       # definicija  novog tkinter prozora kako bi se setovala pozadinska slika mora prethodni prozor da se zatvori
     global klik
     
@@ -83,9 +83,9 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
         tik.destroy()   # ovako se zatvara prozor
         klik = False
 
-
     nov = Tk(className = "Log in")
     nov.geometry("600x350+680+200")
+    nov.resizable(False,False)
     image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
     photo = ImageTk.PhotoImage(image)   
     label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
@@ -94,12 +94,99 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 
     mail_prov = StringVar()
     pass_prov = StringVar()
+    def reset_password():
+        global klik
+        if a == 1:
+            nov.destroy()
+            if a == 1:
+                               
+                res = Tk(className="Forgot password ?")
+                res.geometry("600x350+680+200")
+                res.resizable(False,False)
+                image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
+                photo = ImageTk.PhotoImage(image)   
+                label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
+                label.image = photo
+                label.pack()
+
+                res_mail = StringVar()
+                
+                def cmd_res():
+                
+                    r_mail = unos_mail_res.get()
+                    
+                    query  = povezivanje.cursor()
+                    sql_pass = "select korisnik_id,adresa from registracija.korisnik WHERE adresa = '{0}'".format(r_mail)
+                    query.execute(sql_pass) 
+                    korisnik = query.fetchall()   
+    
+                    lista = []
+                    randum_str = string.ascii_letters
+                    bira_karakter = (random.choice(randum_str + string.digits)for i in range(9))
+                    sifra = ''.join(bira_karakter)
+                    lista.insert(0, sifra)
+
+
+                    def mejl(tekst):    # pomocni parametar
+                        global mail_sifra
+                        password = mail_sifra
+                        od = "mifa43kotez@gmail.com"    # od posiljalca
+                        za = "{0}".format(r_mail)    # za primaoca
+                        msg = MIMEMultipart()
+                        msg["od"] = od
+                        msg["za"] = za 
+                        msg["Subject"] = "Python mail"
+
+                        body = tekst
+                        msg.attach(MIMEText(body, "Plain"))
+
+                        server = smtplib.SMTP("smtp.gmail.com", 587)
+                        server.ehlo()
+                        server.starttls()
+                        server.login("mifa43kotez@gmail.com", password)
+                        text = msg.as_string()
+                        server.sendmail(od, za, text)
+                        print("poslato")
+                        return
+                    mejl('''Dear users {0},
+                                             
+                    Your new password is {1} , after logging in again press options> account> password.'''.format(r_mail, lista[0]))
+
+                    cor = 1
+
+                    for row in korisnik:
+
+                        try:
+                            
+                            mycursor = povezivanje.cursor()
+
+                            sql = "UPDATE korisnik SET lozinka = '{0}' WHERE korisnik_id = '{1}'".format(lista[0], row[0])
+      
+                            mycursor.execute(sql)
+                            povezivanje.commit()
+
+                            if cor == 1:
+                                pass
+                                tkinter.messagebox.showinfo("Verification","Ваша нова лозинка је спремна и послата на е  адресу.")
+                        except:
+                            print('Error in Sql.query')
+    
+                    res_mail.set("")
+
+                unos_mail_res = Entry(res, width = 35, textvariable = res_mail)
+                unos_mail_res.place(x = 210, y = 140)
+                txt_mail_res = Label(res, text = "Enter email", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
+                txt_mail_res.place(x = 210, y = 115)
+
+                reset_it = Button(res, text = "Restart my password",command = cmd_res, bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
+                reset_it.place(x = 250, y = 190)
+ 
+                res.mainloop()
 
     def sign_prov ():
         
         prov_mail = unos_mail.get()
         prov_pass = unos_lozinka.get()
-
 
         def sign_prov_mail():
             global cor
@@ -125,6 +212,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 
         def sign_prov_pass():
             global klik
+            global cor
             try:
                 query  = povezivanje.cursor()
                 sql_pass = "select lozinka from registracija.korisnik WHERE lozinka = '{0}' AND adresa = '{1}'".format(prov_pass, prov_mail)      # provera za lozinku da li se nalazi u nasoj bazi
@@ -144,6 +232,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 print("Password is wrong")
                 tkinter.messagebox.showinfo("Warning","Incorect password !")
 
+
             def notif():
                 try:
                     notifikacija = ToastNotifier()
@@ -161,8 +250,6 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                     notif()     # nakon napustanja programa dobija se informacija o novom apgrejdu
             else:
                 print("Something is wrong")
-            
-                    
 
         sign_prov_mail()
         sign_prov_pass()
@@ -191,7 +278,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
     unos_lozinka_txt = Label(nov, text = "Enter password", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
     unos_lozinka_txt.place(x = 210, y = 165)
 
-    reset = Button(nov, text = "Forgot password ?", bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
+    reset = Button(nov, text = "Forgot password ?", command =  reset_password, bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
     reset.place(x = 430, y = 10)
 
     sign_in = Button(nov, text = "Sign in", command = sign_prov, bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
@@ -203,6 +290,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 #region Tkinter window
 tik = Tk(className = "Registration")
 tik.geometry('1150x800+450+150')
+tik.resizable(False,False)
 #endregion
 #region Tkinter image
 image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
@@ -224,7 +312,8 @@ def klik_prijava():     # funkcija dugmeta
     pass
 
 def uzmi_info():
-    info_korisnik = ime.get()               # funkcija get i set koje nam daju stringov koji su uneseni od strane korisnika
+    global mail_sifra
+    info_korisnik = ime.get()               # funkcija get i set koje nam daju stringove koji su uneseni od strane korisnika
     info_prezime = prezime.get()
     info_email = email.get()
     info_password = lozinka.get()
@@ -250,6 +339,35 @@ def uzmi_info():
         print(query.rowcount,"Uspesno unesen u Bazu podataka korisnik: {0}".format(info_korisnik))   # prikazuje uspesno izvrsavanje
         #endregion
         tkinter.messagebox.showinfo("Successfully","Account successfully created !")
+
+        password = mail_sifra# polje za unos lozinke 
+
+        def mejl(tekst):    # pomocni parametar
+            od = "mifa43kotez@gmail.com"    # od posiljalca
+            za = "{0}".format(info_email)    # za primaoca
+            msg = MIMEMultipart()
+            msg["od"] = od
+            msg["za"] = za 
+            msg["Subject"] = "Python mail"
+
+            body = tekst
+            msg.attach(MIMEText(body, "Plain"))
+
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.ehlo()
+            server.starttls()
+            server.login("mifa43kotez@gmail.com", password)
+            text = msg.as_string()
+            server.sendmail(od, za, text)
+            print("poslato")
+            return
+        mejl('''Welcome {0},
+
+        In our community Gui Application service comfortably accommodate and read more about us at: www.//guiapps.com.
+
+        Thank you for your trust:
+           GuiApps.'''.format(info_korisnik))
+
     else:
         tkinter.messagebox.showinfo("Warning","Password entered incorrectly! \n \tTry again.")
 
