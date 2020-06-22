@@ -16,7 +16,7 @@ import os
 
 __version__ = "0.1"     # ovo je oznaka za verziju programa
 
-mail_sifra = os.getenv('mailsifra')
+mail_sifra = os.getenv('mailsifra') # env variablaa za password iz sistema
 dbpass = os.getenv('dbpassword')
 #region Connect to mysql
 try:
@@ -45,34 +45,6 @@ def dobro_dosao():
     label.image = photo
     label.pack()
     
-    #region progres bar
-    # PROGRES BAR : nadji nacin kako da ga startujes kada se otvori prozor 
-    #Problem je u tome sto se prozor koci i bar se startuje pre otvaranja prozora zbog sleepa traje 5-6 sec kada dodje do 100% tek tada se otvara prozor
-    # s = Style(sec)
-    # s.layout("LabeledProgressbar",
-    #     [('LabeledProgressbar.trough',
-    #     {'children': [('LabeledProgressbar.pbar',
-    #                     {'side': 'left', 'sticky': 'ns'}),
-    #                     ("LabeledProgressbar.label",
-    #                     {"sticky": ""})],
-    #         'sticky': 'nswe'})])
-    # p = Progressbar(sec, orient= HORIZONTAL, length=200, mode="determinate",style="LabeledProgressbar" )
-    # p.place(x = 350, y = 100)
-    # s.configure("LabeledProgressbar", text="0 %      ")
-    # def bar():
-        
-    #     if a == 1: 
-    #         for i in range (101):
-    #             time.sleep(0.05)
-    #             p["value"] = i
-    #             s.configure("LabeledProgressbar", text="{0} %      ".format(i))
-    #             sec.update_idletasks()
-                
-    #         p["value"] = 0
-    #     else:
-    #         tkinter.messagebox.showinfo("Warning","Some dataType is gone wrong!")
-    #endregion  
-    # ovo cu naknadno da dodam prvo moram da smislim nacin gde da ga smestim i kako da ga aktiviram a da se ne desava greska 
   
     sec.mainloop()
     
@@ -167,7 +139,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 
                             if cor == 1:
                                 pass
-                                tkinter.messagebox.showinfo("Verification","Ваша нова лозинка је спремна и послата на е  адресу.")
+                                tkinter.messagebox.showinfo("Verification","Your new password is ready and sent to your email address.")
                         except:
                             print('Error in Sql.query')
     
@@ -253,17 +225,6 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 
         sign_prov_mail()
         sign_prov_pass()
-        
-            # 1. sredi izbacivanje greske za pogresan mail i pass
-            # 2. dodaj nesto tipa s = succesefully return s za oepn novog prozora nakon logovanja ako je mail i pass postojecci
-            # 3. napravi prozor za reset passa
-            # 4. u generator pasa dodaj i brojeve
-            # 5. spoji sa forgot password
-            # 6. napravi svoj kod za slanje maila kako bi naucio kako to radi
-            # 7. nadji kako da napravis neki conform za email tipa xml..
-            # 8. ako su 3,4,5,6,7 napravi da je lozinka za reset duzine trajanja 5-10 min 
-            # 9. nakon reset pasa treba nam nova lozinka za korisnika 
-            # koraci 
             
         mail_prov.set("")
         pass_prov.set("")
