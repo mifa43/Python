@@ -1,5 +1,5 @@
 import mysql.connector  # mysql modul za konektovanje sa python skriptom
-from mysql.connector import Error   # modul koji nam pokazuje greske koje se javljaju pri pisanju upita
+#from mysql.connector import error  # modul koji nam pokazuje greske koje se javljaju pri pisanju upita
 from tkinter import *
 import tkinter.messagebox
 from tkinter import ttk
@@ -21,12 +21,13 @@ dbpass = os.getenv('dbpassword')
 #region Connect to mysql
 try:
     povezivanje = mysql.connector.connect(host='localhost',     # u try blok se nalazi komanda za konektovanje
-                                         database='Registracija',
+                                         database='registracija',
                                          user='root',
                                          password='{0}'.format(dbpass))
-except Error as e:  # ako nije uspela konekcija prikazuje gresku
+except povezivanje.error as e:  # ako nije uspela konekcija prikazuje gresku
     print("Error greska pri konektovanju", e)
     exit()
+
 #endregion
 
 klik = True
@@ -36,16 +37,114 @@ a = 1
 
 def dobro_dosao():
     global klik
+
+  
+
     sec = Tk(className = "Welcome")
     sec.geometry("920x800+500+100")
     sec.resizable(False,False)
-    image = Image.open("C:src\\bg.jpg") 
+    image = Image.open("C:\\Users\\Milos\\Desktop\\bg.jpg") 
     photo = ImageTk.PhotoImage(image)   
     label = Label(image = photo)    
     label.image = photo
     label.pack()
     
-  
+    jednokratni_passw = StringVar()
+    new_pass = StringVar()
+    rep_pass = StringVar()
+    def change_pass(): 
+        check_jednokratni_pass = 0
+
+        # ako nije jasno sta je provera_1.. iza znaka jednaksti je varibla sa vrednostima stringvar koja hvata unesen text iz entery polja 
+        # sa nesto.get() vracamo tekst iz polja za unos u variablu provera_1 i pritom prikazujemo to radimo da mozemo da upisemo stvari u bazu podataka
+        provera_1 = jednokratni_passw.get()
+        provera_2 =  new_pass.get()
+        provera_3 = rep_pass.get()
+
+        # komanda za kreiranje prozora za restartovanje passworda
+        jednokratni_pass = Entry(sec, width = 35, show = "*", textvariable = jednokratni_passw)
+        jednokratni_pass.place(x = 400, y = 300)
+        txt_jednokratni_pass = Label(sec, text = "Enter one-time password", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
+        txt_jednokratni_pass.place(x = 400, y = 275)
+
+        unos_pass_new = Entry(sec, width = 35, show = "*", textvariable = new_pass)
+        unos_pass_new.place(x = 400, y = 360)
+        txt_pass_new = Label(sec, text = "Enter new password", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
+        txt_pass_new.place(x = 400, y = 335)
+
+        unos_pass_rep = Entry(sec, width = 35, show = "*", textvariable = rep_pass)
+        unos_pass_rep.place(x = 400, y = 420)
+        txt_pass_rep = Label(sec, text = "Repeat password", bg = "#ffffff", fg="black", font = ("Helvetica", 10, "bold italic"))
+        txt_pass_rep.place(x = 400, y = 395)
+
+        old_pass = Button(sec, text = "Change password", command = change_pass,  bg = "#ffffff", fg="black", font = ("Helvetica", 8, "bold italic"), pady=3, padx=5 )
+        old_pass.place(x = 400, y = 450)
+
+
+        try:
+            query  = povezivanje.cursor()
+            sql_select = "select lozinka from registracija.korisnik WHERE lozinka = '{0}'".format(provera_1)      # provera za password da li se nalazi u nasoj bazi
+            query.execute(sql_select)   # izvrsava upit
+            rekord = query.fetchall()   # vraca sve redove iz upita
+            re_password = ''.join(rekord[0]) # rekord vraca tuplu sa joinom dobijamo informaciju iz baze
+
+            print(re_password)
+            check_jednokratni_pass = 1 # variabla koja nam pokazuje da je jednokratni password postojeci u bazi podataka
+        except:
+            print("one-time password incorect!")
+
+        if check_jednokratni_pass == 1: # ako je jedan znaci da je try blok izvrsen
+            
+            if len(provera_2 and provera_3) <= 5 : 
+                tkinter.messagebox.showinfo("Warning","Your password is too short no less than 6 characters allowed \n \t\tand no spaces !")
+
+            elif provera_2 == provera_3 or provera_3 == provera_2:    # dve lozinke moraju da budu iste inace nece uci u sledeci blok
+                print(provera_2, " / ", provera_3)
+
+                
+                try:
+                    query  = povezivanje.cursor()
+                    sql_select = "UPDATE korisnik SET lozinka = '{0}' WHERE ime = 'laza'".format(provera_2)
+                    query.execute(sql_select)  
+                    rekord = query.fetchall()                                           
+                    new_password = ''.join(rekord[0]) 
+                    print(new_password)
+                    tkinter.messagebox.showinfo("Successfully","You have successfully changed the password !")
+                except:
+                    print("Error")
+                
+
+                   # zbog  rekord = query.fetchall()  se ne izvrsava sledeci deo koda pokusaj da izmenis imena mozda se mesa sa prethodnim upitom jel su u istoj definiciji:
+                   # pokusaj onda da stavis poseban def blok i pozovi ga da vidids da li oce tako ako nje googlaj i vidi sta kazu formi 
+                   # cilj je upisati novu lozinku u DB za to imas generisan password ali sta ako neko oces da pormeni lozinku i bez povracaja a postoje dve iste npr"1234" razmisli o idu ili emailu kao i sql upitima!
+    
+        else:
+            pass
+     
+        
+        # nakon pritisnutog dugmeta setujemo tekst "" - kako bi dobili prazno polje
+        jednokratni_passw.set("")
+        new_pass.set("")
+        rep_pass.set("")
+
+    def return_home():
+        # komanda za unistavanje prozora koja pritom otvara novi pocetni prozor
+        # dobijamo efekat vracanja pocetne stranice
+        sec.destroy()
+
+        dobro_dosao()
+        
+    menu_bar = Menu(sec)    # menu bar sa opcijama 
+    # ovde smo kreirali sadrzaj menua i dodelili komande kako i sta ce da se izvrrava
+    file_menu = Menu(menu_bar, tearoff = 0)
+    file_menu.add_command(label = "Change password", command = change_pass)
+    file_menu.add_command(label = "Change username", command = change_pass)
+    file_menu.add_separator()
+    file_menu.add_command(label = "Return to home ", command = return_home)
+    menu_bar.add_cascade(label = "Settings", menu = file_menu)
+
+    sec.config(menu = menu_bar)
+
     sec.mainloop()
     
 def log_in():       # definicija  novog tkinter prozora kako bi se setovala pozadinska slika mora prethodni prozor da se zatvori
@@ -58,7 +157,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
     nov = Tk(className = "Log in")
     nov.geometry("600x350+680+200")
     nov.resizable(False,False)
-    image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
+    image = Image.open("C:\\Users\\Milos\\Desktop\\bg.jpg") #ovo je putanja do slike
     photo = ImageTk.PhotoImage(image)   
     label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
     label.image = photo
@@ -75,7 +174,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 res = Tk(className="Forgot password ?")
                 res.geometry("600x350+680+200")
                 res.resizable(False,False)
-                image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
+                image = Image.open("C:\\Users\\Milos\\Desktop\\bg.jpg") #ovo je putanja do slike
                 photo = ImageTk.PhotoImage(image)   
                 label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
                 label.image = photo
@@ -122,7 +221,7 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                         return
                     mejl('''Dear users {0},
                                              
-                    Your new password is {1} , after logging in again press options> account> password.'''.format(r_mail, lista[0]))
+                    Your new password is {1} , after logging in again press Settings> Change password.'''.format(r_mail, lista[0]))
 
                     cor = 1
 
@@ -155,15 +254,15 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
  
                 res.mainloop()
 
-    def sign_prov ():
-        
+    def sign_prov():
+       
         prov_mail = unos_mail.get()
         prov_pass = unos_lozinka.get()
 
         def sign_prov_mail():
             global cor
             global mail_suc
-            
+
             try:
                 query  = povezivanje.cursor()
                 sql_select = "select adresa from registracija.korisnik WHERE adresa = '{0}'".format(prov_mail)      # provera za email da li se nalazi u nasoj bazi
@@ -173,7 +272,8 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 
                 if prov_mail == mail:
                     print("mail = {0}".format(mail))
-                    mail_suc = 1        # ako je postojeci vrednost je 1 
+                    mail_suc = 1        # ako je postojeci vrednost je 1
+                 
                 else:
                     pass
             except:
@@ -181,7 +281,8 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
                 tkinter.messagebox.showinfo("Warning","Incorect mail !")
                 mail_suc = 0
             return mail_suc
-
+        
+            
         def sign_prov_pass():
             global klik
             global cor
@@ -225,9 +326,10 @@ def log_in():       # definicija  novog tkinter prozora kako bi se setovala poza
 
         sign_prov_mail()
         sign_prov_pass()
-            
+
         mail_prov.set("")
         pass_prov.set("")
+   
     #region forms for sign in
     unos_mail = Entry(nov, width = 35, textvariable = mail_prov)
     unos_mail.place(x = 210, y = 140)
@@ -254,7 +356,7 @@ tik.geometry('1150x800+450+150')
 tik.resizable(False,False)
 #endregion
 #region Tkinter image
-image = Image.open("C:src\\bg.jpg") #ovo je putanja do slike
+image = Image.open("C:\\Users\\Milos\\Desktop\\bg.jpg") #ovo je putanja do slike
 photo = ImageTk.PhotoImage(image)   
 label = Label(image = photo)    # ovde postavljamo sliku za pozadinu
 label.image = photo
@@ -280,6 +382,11 @@ def uzmi_info():
     info_password = lozinka.get()
     reinfo_password = ponavljanje_lozinke.get()
 
+    rand_num = "0123456789" # string sa brojnim vrednostima
+    generisan_id = (random.choice(rand_num)for i in range(5)) # biramo nasumicno brojeve i uz for petlju odredjujemo duzinu 
+    generisan_id = "".join(generisan_id) # spajamo vrednosti
+    generisan_id = "#" + generisan_id # i dodajemo "#" ispred
+
     if len(info_korisnik and info_prezime and info_password  and reinfo_password and info_email) == 0:          # ovo su uslovi koji moraju da se izvrse kako bi se uspesno registrovali i bili upisani u bazu 
         tkinter.messagebox.showinfo("Warning","It is not possible to create an account without value !")
     elif len(info_korisnik) <= 3:
@@ -288,13 +395,13 @@ def uzmi_info():
         tkinter.messagebox.showinfo("Warning","No less than 3 last name characters allowed !")
     elif "@" not in info_email:
         tkinter.messagebox.showinfo("Warning","This is not an email address it is necessary to have an '@' tag.")
-    elif len(info_password and reinfo_password) <= 3 : 
+    elif len(info_password and reinfo_password) <= 5 : 
         tkinter.messagebox.showinfo("Warning","Your password is too short no less than 6 characters allowed \n \t\tand no spaces !")
     elif info_password == reinfo_password or reinfo_password == info_password:
         #region Write to mysql
         query  = povezivanje.cursor()   # ovo je prozor u kome se pise upit njega selektuje iz baze Registracija
-        upit = "INSERT INTO korisnik (ime, prezime, adresa, lozinka) VALUES (%s,%s,%s,%s)"  # ovako se upisuje vrednost u kolone %s - oznacava kolone
-        vrednost = (info_korisnik, info_prezime, info_email, info_password)   # ovo su vrednosti koje se upisuju
+        upit = "INSERT INTO korisnik (ime, prezime, adresa, lozinka, id_app) VALUES (%s,%s,%s,%s,%s)"  # ovako se upisuje vrednost u kolone %s - oznacava kolone
+        vrednost = (info_korisnik, info_prezime, info_email, info_password, generisan_id)   # ovo su vrednosti koje se upisuju
         query.execute(upit, vrednost)    # promenljive se stavljaju u execute
         povezivanje.commit()
         print(query.rowcount,"Uspesno unesen u Bazu podataka korisnik: {0}".format(info_korisnik))   # prikazuje uspesno izvrsavanje
