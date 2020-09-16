@@ -7,7 +7,7 @@ import webbrowser
 import subprocess
 
 lista = []
-unos = int(input("Unesi broj '1' za unos glasovne poruke:"))
+unos = int(input("Unesi broj '1' za unos glasovne poruke: "))
 
 def rekorduj():
     global lista
