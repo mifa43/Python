@@ -17,9 +17,9 @@ def rekorduj():
     sd.wait()  # pauziranje kako bi se snimijo zvuk
     write('output.wav', fs, mojrekording)  # pisanje i cuvanje zvuka u wav format
 
-    winsound.Beep(1000, 100)    # beep winsound modul za slusanje snimljenog zvuka
-    filename = "output.wav" # ekstenzija fajla je wav 
-    winsound.PlaySound(filename, winsound.SND_FILENAME) #  plejer 
+    # winsound.Beep(1000, 100)    # beep winsound modul za slusanje snimljenog zvuka
+    # filename = "output.wav" # ekstenzija fajla je wav 
+    # winsound.PlaySound(filename, winsound.SND_FILENAME) #  plejer 
 
     data, samplerate = sf.read('output.wav')    # modul za konvertovanje wav fajla u \
     sf.write('output.flac', data, samplerate)  # flac fajl 
@@ -30,28 +30,29 @@ def rekorduj():
     hard = sr.AudioFile('output.flac') # audio fajl koji citamo 
     with hard as source:    # otvaranje i konvertovanje audio fajla u tekst 
         audio = r.record(source)
-    rec_1 = r.recognize_google(audio)
+    rec_1 = r.recognize_google(audio)   # izgovorenu recenicu stavljamo u variablu
+    
+    rec_2 = rec_1.split(" ")    # zatim pomocu splita rastavljamo recenicu i stavljamo u listu
 
-    lista.insert(0, rec_1)  # u listu se dodaje izgovorena rec
-    print(lista[0])
-    for i in lista:     # sa for petljom proveravamo reci koje su unesene
-        lista_cmds = ['open', 'do']     # lista cmd je lista kljucnih reci koje mozemo da pretvorimo u komande za izvrsavanje 
-        for n in lista_cmds:    # proveravamo dali u listi izgovorene reci postoji i rec koja opisuje neku od reci iz liste komande
-            if 'open' in i and 'open' in n:     # uslov ako je izgovorena rec open i ta rec ima u listi komanda izvrsavamo otvaranje necega >!< za sada je to otvaranje googla 
-               
-               
-                subprocess.call("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
-                webbrowser.open("https://www.youtube.com")
-                print("+1")
+    lista_cmds = ['open', 'do']     # lista komandi koje mogu da se izvrsavaju npr open ima svoju listu sta moze da otvara dok do nema nista za sad
+    lista_za_open = ['YouTube', 'Google', 'docs.python.org']
 
+    provera = any(item in rec_2 for item in lista_cmds)     # any funkcija pravi proveru da li rec_2 i lista_cmds ima zajednicko nesto ako ima vraca nam bool true ili false ako nema
+    if provera == True:     # ako je tacno ulazimo u sledeci blok
+        for i in rec_2:     # proveravamo reci iz liste i liste cmds ako postoje pomocu filtera mozemo da je ispisemo 
+            filt_object = filter(lambda a : i in a, lista_cmds)
+            provera_2 = any(item in rec_2 for item in lista_za_open)
+            if provera_2 == True:
+                    filt_object_2 = filter(lambda b : i in b, lista_za_open)
+                    if ('open' and 'Google' in list(filt_object), list(filt_object_2)): #filte_object pretvaramo u listu kako bi mogli da utvrdimo da li su izgovorene reci odgovarajuce ovom bloku
+                        subprocess.call("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
+                        break
+            else:
+                print("ova komanda to ne moze")
+    else:
+        print("Rec nije komanda")
+
+        #webbrowser.open("https://www.youtube.com")
             
-            
-
-   
-
-
-
-
-
 if unos == 1:
     rekorduj()
