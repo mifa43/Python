@@ -31,11 +31,9 @@ def rekorduj():
     with hard as source:    # otvaranje i konvertovanje audio fajla u tekst 
         audio = r.record(source)
     rec_1 = r.recognize_google(audio)   # izgovorenu recenicu stavljamo u variablu
-    
     rec_2 = rec_1.split(" ")    # zatim pomocu splita rastavljamo recenicu i stavljamo u listu
-
     lista_cmds = ['open', 'do']     # lista komandi koje mogu da se izvrsavaju npr open ima svoju listu sta moze da otvara dok do nema nista za sad
-    lista_za_open = ['YouTube', 'Google', 'docs.python.org']
+    lista_za_open = ['YouTube', 'Google', 'docs.python.org']    # lista cmds ima komandu open komanda open ima listu sadrzaja sta moze da otvori
 
     provera = any(item in rec_2 for item in lista_cmds)     # any funkcija pravi proveru da li rec_2 i lista_cmds ima zajednicko nesto ako ima vraca nam bool true ili false ako nema
     if provera == True:     # ako je tacno ulazimo u sledeci blok
@@ -45,8 +43,8 @@ def rekorduj():
             if provera_2 == True:
                     filt_object_2 = filter(lambda b : i in b, lista_za_open)
                     if ('open' and 'Google' in list(filt_object), list(filt_object_2)): #filte_object pretvaramo u listu kako bi mogli da utvrdimo da li su izgovorene reci odgovarajuce ovom bloku
-                        subprocess.call("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
-                        break
+                        subprocess.call("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe") # subprocess otvara chrome ako filter objekti sadrze dve navedene reci open i google
+                        break   # nakon otvaranja taba brejkujemo program
             else:
                 print("ova komanda to ne moze")
     else:
