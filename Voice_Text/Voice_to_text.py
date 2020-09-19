@@ -5,9 +5,12 @@ import speech_recognition as sr
 import soundfile as sf
 import webbrowser
 import subprocess
-
+import os
 lista = []
-unos = int(input("Unesi broj '1' za unos glasovne poruke: "))
+#unos = int(input("Unesi broj '1' za unos glasovne poruke: "))
+sifra = []
+
+
 
 def rekorduj():
     global lista
@@ -33,8 +36,9 @@ def rekorduj():
     rec_1 = r.recognize_google(audio)   # izgovorenu recenicu stavljamo u variablu
 
     rec_2 = rec_1.split(" ")    # zatim pomocu splita rastavljamo recenicu i stavljamo u listu
-    lista_cmds = ['open', 'copy']     # lista komandi koje mogu da se izvrsavaju npr open ima svoju listu sta moze da otvara dok do nema nista za sad
-    lista_za_open = ['YouTube', 'Google', 'Python']    # lista cmds ima komandu open komanda open ima listu sadrzaja sta moze da otvori
+    lista_cmds = ['open', 'copy', 'run']     # lista komandi koje mogu da se izvrsavaju npr open ima svoju listu sta moze da otvara dok do nema nista za sad
+    lista_za_run = ["backup"]
+    lista_za_open = ['YouTube', 'browser', 'Python']    # lista cmds ima komandu open komanda open ima listu sadrzaja sta moze da otvori
     lista_za_copy = ["file", "directory"]
     lista_simbola = ["/", "\\", "c"]
     #print(lista_simbola[1])
@@ -52,19 +56,19 @@ def rekorduj():
 
                     if 'copy' in konvert or konvert_2 == True :    # zato sto 'copy' komanda se nalazi u listi i kada kazemo do youtube otvara se yt ili bilo sta drugo morao sam da regulisem ako neko
                         break   # kaze do da ne otvara stvari koje se otvaraju sa open za to sam koristio bool ako se 'copy' nadje u reci da brejkujemo do sledece linije onda odatle mozemo da dodamo komande za copy 
-                    if (konvert == 'Google' or konvert_2 == 'Google'): 
-                        subprocess.call("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe") # subprocess otvara chrome ako filter objekti sadrze navedenu recu if uslovu google
-                        break   # nakon otvaranja taba brejkujemo program
+                    if (konvert == 'browser' or konvert_2 == 'browser'): 
+                        subprocess.Popen("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe") # subprocess otvara chrome ako filter objekti sadrze navedenu recu if uslovu google
+                        #break   # nakon otvaranja taba brejkujemo program
                     if (konvert == 'YouTube' or konvert_2 == 'YouTube'):    #uslovi za otvaranje su promenjeni vise nema open iz razloga jel taj uslov vec postoji da nismo rekli open ne bi ni dosli do ovog bloka
                         url = 'http://youtube.com/'     # url stranice koju otvaramo
                         chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'  # ovo je lokacija chroma
                         webbrowser.get(chrome_path).open(url, new=1)    # prosledjujemo path i otvaramo url u novom prozoru
-                        break   # nakon izvrsavanja brejkujemo program
+                        #break   # nakon izvrsavanja brejkujemo program
                     if (konvert == 'Python' or konvert_2 == 'Python'): 
                         url = 'http://docs.python.org/'     
                         chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'  
                         webbrowser.get(chrome_path).open(url, new=1)   
-                        break
+                        #break
             else:
                 print("Ova komanda ne moze da izvrsi taj proces")
     else:
@@ -83,7 +87,11 @@ def rekorduj():
                 konvert_3 = ''.join(list(filt_object_3))
                 
 
-                info = """Za pomeranje fajlova navodi sa backslash za nazad i slash za napred"""
+                info = """              Komande za kopiranje fajlova:
+1. Ako navodis drive prvo ukucaj 'c' nakon toga izgovori 'CD', opet ukucaj 'c' i izgovori ime drive npr drive'F'.
+2. Za navodjenje simbola ukucaj 's' i za nazad izgovori 'backslash' za napred izgovori 'slash'.
+3. Za navodjenje imena foldera ukucaj 'n' i izgovori ime foldera. 
+4. BITNO: Prilikom navodjenja imena foldera maksimalan broj razmaka u imenu foldera je 3"""
                 
               
                 if konvert == 'file' or konvert_3 == 'file':    # provera da li je file u nekoj od varijabli
@@ -93,7 +101,7 @@ def rekorduj():
                     izlaz = ''
                     recenice = []
                     while izlaz != 'quit':  # WHILE petlja traje sve dok se u listu za izlaz ne upise quit dok se unosi n nastavlja se snimanje reci
-                        izlaz = input("Unesi 'n' za sledeci simbol ili 'quit' za izlaz: ")
+                        izlaz = input("Prati korake postepeno za pravilno koriscenje ove opcije: ")
                         names.append(izlaz)
 
                         if izlaz == 'quit': # izlaz iz petlje
@@ -119,29 +127,51 @@ def rekorduj():
                         navodi = r.recognize_google(audio)
                         navodi_2 = navodi.split(" ")
                         recenice.append(navodi_2)   # dodajemo u listu reci i karaktere koji su uneseni
+                        continue
 
-                    
-                    for t in recenice:
-                        list_src = []   # u ovoj listi treba da pokusamo da spojimo zasebne karaktere i simbole da stvorimo naziv nekog foldera/direktorijuma
-                        print(t[0])
-                        if 'slash' in t:    # kada kazemo recenicom slash i ako je u t onda dodeljujemo vrednost simbola 
-                            t = '/'
-                            list_src.append(t)
-                            
-                        if lista_simbola[1] in t:  
-                            t = lista_simbola[1]    
-                            list_src.append(t)
-                        if 'see' in t:  # posto modul nije najpametniji i ne moze da razlikuje spelovanje od slova potrebno je da navedemo neke od slova za neke od reci kako ih on tumaci i da sami dodelimo vrednost 
-                            t = 'c'     # posto c je procitao 10-20 puta kao see i kada kaze see dodamo da je to vrednost c
-                            list_src.append(t)
-                        if 'colon' in t:
-                            t = ':'
-                            list_src.append(t)
-                        for m in list_src:
-                            print(m[0])
-                            
+                    file_path = []
+                    for n in names:
                         
-                    # print(names)
+                        if n == 'n':
+                            for r in recenice:
+                                if len(r) == 2:
+                                    print(r[0], r[1])
+                                if len(r) == 3:
+                                    print(r[0], r[1], r[2])
+                                if len(r) == 4: 
+                                    print(r[0], r[1], r[2], r[3])
+                                else:
+                                    print('Previse je dugacko ime foldera max razmaka je "3"')
+                            
+
+                        if n == 's':    # komanda za specijalne simbole
+                            for s in recenice:  
+                                if 'slash' in s:    # konvertovanje reci u simbol
+                                    s = '/'
+                                    print(s)
+                                    file_path.append(s)
+                                if lista_simbola[1] in s:   # konvertovanje backslasha u simbol \
+                                    s = lista_simbola[1]
+                                    print(s)
+                                    file_path.append(s)
+
+                        if n == 'c':    # komanda 'CD' za navodjenje direktorijuma
+                            for c in recenice:
+                                if 'CD' in c:
+                                    for d in recenice[1]: 
+                                        var = d + ":" # dodavanje dvotacke za drive npr 'F:'
+                                        file_path.append(var)
+                                        
+                                       
+                                   
+                                
+                    file_path.pop(1)   
+                    print(file_path)
+                                    
+                        
+                
+
+ 
                    
 
                 #lista abecede koja ne moze u ovaj program
@@ -152,9 +182,58 @@ def rekorduj():
                 if konvert == "directory" or konvert_3 == 'directory':
                     print("directory")
 
+    provera = any(item in rec_2 for item in lista_cmds)
+    if provera == True:
+        filt_object = filter(lambda a : i in a, lista_cmds)
+        provera_2 = any(item in rec_2 for item in lista_za_run)
+        if provera_2 == True:
 
-if unos == 1:
-    rekorduj()
+            print("yes it's true")
+            os.system('python "c:\\Users\\Milos\\Desktop\\Python Pro\\Python\\Voice_Text\\copy_dirs.py"')
+
+def pocetak():
+    global sifra
+    fs = 44100  # frekvencija u hz
+    seconds = 3  # trajanje zvuka
+    mojrekording = sd.rec(int(seconds * fs), samplerate=fs, channels=2) # kanali za snimanje
+    sd.wait()  # pauziranje kako bi se snimijo zvuk
+    write('output.wav', fs, mojrekording)  # pisanje i cuvanje zvuka u wav format
+
+    data, samplerate = sf.read('output.wav')    # modul za konvertovanje wav fajla u \
+    sf.write('output.flac', data, samplerate)  # flac fajl 
+    # nisam bas strucan za audio produkciju ali koliko sam procitao razlika izmedju wav i flaca je u frekvenciji i kanala emitovanja
+    # i iz tog razloga speech_recognition modul za pisanje zvucnih fajlova u txt fajlove ne moze da koristi wav, mp3.. itd audio formate ali mu odgovara flac
+
+    r = sr.Recognizer() 
+    hard = sr.AudioFile('output.flac') # audio fajl koji citamo 
+    with hard as source:    # otvaranje i konvertovanje audio fajla u tekst 
+        audio = r.record(source)
+    try:
+        rec_1 = r.recognize_google(audio)   # izgovorenu recenicu stavljamo u variablu
+    except:
+        rec_1 = ''
+
+    rec_2 = rec_1.split(" ")    # zatim pomocu splita rastavljamo recenicu i stavljamo u listu
+    lista_cmds = ['please']
+    #print(rec_2)
+    sifra.append(rec_2)
+
+while True:     # while petlja se koristi kako bi program konstanto slusao i uz kljucnu rec 'please'program slusa komande koje izgovaramo sa 'break' se zaustavlja
+    print("Say please to python: ")
+    sifra = []
+    pocetak()
+    if 'please' in sifra[0]:
+        print("Say commands to python:")
+        rekorduj()
+        sifra = []
+        continue
+    elif 'break' in sifra[0]:
+        print("now while loop will break!")
+        break
+    else:
+        continue
+
+print("done")
     
 # u nekim trenucima pre izgovora komande postoji greska zbog malih i velihih slova to pokusaj da resis sa uper ili lower komandom da generises pocena velika slova jel je svaka rec u listi
 # za svako slovo koje je teze protumaciti dodaj kako ga tumaci i jednako kako bi trebao nakon toga sastavi karaktere i simbole u jednu variablu i i pokusaj sa os da proveris da li postoju dir 
