@@ -6,6 +6,7 @@ import soundfile as sf
 import webbrowser
 import subprocess
 import os
+import os.path
 lista = []
 #unos = int(input("Unesi broj '1' za unos glasovne poruke: "))
 sifra = []
@@ -87,15 +88,17 @@ def rekorduj():
                 konvert_3 = ''.join(list(filt_object_3))
                 
 
-                info = """              Komande za kopiranje fajlova:
+                info = """                      Komande za kopiranje fajlova:
 1. Ako navodis drive prvo ukucaj 'c' nakon toga izgovori 'CD', opet ukucaj 'c' i izgovori ime drive npr drive'F'.
 2. Za navodjenje simbola ukucaj 's' i za nazad izgovori 'backslash' za napred izgovori 'slash'.
 3. Za navodjenje imena foldera ukucaj 'n' i izgovori ime foldera. 
-4. BITNO: Prilikom navodjenja imena foldera maksimalan broj razmaka u imenu foldera je 3"""
+4. BITNO: Prilikom navodjenja imena foldera maksimalan broj razmaka u imenu foldera je 3, 
+ako u imenu foldera postoji razmak prvo izgovori prvu rec imena foldera npr 'program'\\'file' sa dva backslasha-
+se navodi da je razmak izmedju  
+"""
                 
               
                 if konvert == 'file' or konvert_3 == 'file':    # provera da li je file u nekoj od varijabli
-                    print("file")
                     print(info)
                     names = []
                     izlaz = ''
@@ -127,52 +130,61 @@ def rekorduj():
                         navodi = r.recognize_google(audio)
                         navodi_2 = navodi.split(" ")
                         recenice.append(navodi_2)   # dodajemo u listu reci i karaktere koji su uneseni
+                        print(recenice)
                         continue
+
 
                     file_path = []
                     for n in names:
-                        
                         if n == 'n':
                             for r in recenice:
                                 if len(r) == 2:
-                                    print(r[0], r[1])
+                                    f = r[0], r[1]
+                                    file_path.append(f)
                                 if len(r) == 3:
-                                    print(r[0], r[1], r[2])
+                                    e = r[0], r[1], r[2]
+                                    file_path.append(e)
                                 if len(r) == 4: 
-                                    print(r[0], r[1], r[2], r[3])
+                                    o = r[0], r[1], r[2], r[3]
+                                    file_path.append(o)
                                 else:
                                     print('Previse je dugacko ime foldera max razmaka je "3"')
-                            
 
                         if n == 's':    # komanda za specijalne simbole
                             for s in recenice:  
                                 if 'slash' in s:    # konvertovanje reci u simbol
-                                    s = '/'
-                                    print(s)
-                                    file_path.append(s)
+                                    w = '/'
+                                    file_path.append(w)
                                 if lista_simbola[1] in s:   # konvertovanje backslasha u simbol \
-                                    s = lista_simbola[1]
-                                    print(s)
-                                    file_path.append(s)
+                                    w = lista_simbola[1] 
+                                    file_path.append(w)
 
                         if n == 'c':    # komanda 'CD' za navodjenje direktorijuma
                             for c in recenice:
                                 if 'CD' in c:
-                                    for d in recenice[1]: 
-                                        var = d + ":" # dodavanje dvotacke za drive npr 'F:'
-                                        file_path.append(var)
-                                        
-                                       
-                                   
-                                
-                    file_path.pop(1)   
-                    print(file_path)
-                                    
+                                    for d in recenice[1]:
+                                        if 'see' in recenice[1]:
+                                            d = 'C'
+                                            var = d + ":" # dodavanje dvotacke za drive npr 'F:'
+                                            file_path.append(var)   # dodajemo u listu var koji ima C: 
+                                            if len(file_path) == 2: # koristimo pop zato sto zbog for petlje dublira korake
+                                                print("new is't pop")
+                                                file_path.pop(1)
+                                        else:
+                                            var = d + ":" 
+                                            file_path.append(var)
+                                            if len(file_path) == 2:
+                                                print("new is't pop")
+                                                file_path.pop(1)                    
+                    dir_path = ''
+                    for path in file_path:
+                        qw = ''.join(path)
+                        dir_path = qw
+                        files = os.listdir(dir_path)
+                    
+                    for item in files:
                         
-                
-
- 
-                   
+                        print("direktori: ", item)
 
                 #lista abecede koja ne moze u ovaj program
                 # s-see, h-ash, o-oh, p-b, q-kwel, r-are, s-ass, oce/t-d, u-you, v-we, y-why       
@@ -189,7 +201,7 @@ def rekorduj():
         if provera_2 == True:
 
             print("yes it's true")
-            os.system('python "c:\\Users\\Milos\\Desktop\\Python Pro\\Python\\Voice_Text\\copy_dirs.py"')
+            os.system('python "c:\\users\\milos\\desktop\\python Pro\\python\\Voice_Text\\copy_dirs.py"')
 
 def pocetak():
     global sifra
@@ -227,7 +239,7 @@ while True:     # while petlja se koristi kako bi program konstanto slusao i uz 
         rekorduj()
         sifra = []
         continue
-    elif 'break' in sifra[0]:
+    elif 'exit' in sifra[0]:
         print("now while loop will break!")
         break
     else:
@@ -237,4 +249,6 @@ print("done")
     
 # u nekim trenucima pre izgovora komande postoji greska zbog malih i velihih slova to pokusaj da resis sa uper ili lower komandom da generises pocena velika slova jel je svaka rec u listi
 # za svako slovo koje je teze protumaciti dodaj kako ga tumaci i jednako kako bi trebao nakon toga sastavi karaktere i simbole u jednu variablu i i pokusaj sa os da proveris da li postoju dir 
-# ako postoji ispisi ga da korisnik prvo vidi da li je to to na sta je mislio 
+# ako postoji ispisi ga da korisnik prvo vidi da li je to to na sta je mislio
+
+# pokusaj da napravis posebnu listu za dir imena i onda ako korisnik stisne n i kaze perogram pa stisne s i kaze space i open n i kaze fails da u listu doda program fails 
