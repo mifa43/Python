@@ -130,17 +130,21 @@ se navodi da je razmak izmedju
                         navodi = r.recognize_google(audio)
                         navodi_2 = navodi.split(" ")
                         recenice.append(navodi_2)   # dodajemo u listu reci i karaktere koji su uneseni
+                        
                         print(recenice)
                         continue
 
 
                     file_path = []
+                    ls_nm = []  # pomocna lista za imena dira ako ime sadrzi dve reci onda je tuple
                     for n in names:
                         if n == 'n':
                             for r in recenice:
-                                if len(r) == 2:
-                                    f = r[0], r[1]
-                                    file_path.append(f)
+                                if len(r) == 2:     # upisivanje reci za ime direktorijuma
+
+                                    f = r[0], r[1]      
+                                    ls_nm.append(f)
+                                    
                                 if len(r) == 3:
                                     e = r[0], r[1], r[2]
                                     file_path.append(e)
@@ -175,16 +179,25 @@ se navodi da je razmak izmedju
                                             file_path.append(var)
                                             if len(file_path) == 2:
                                                 print("new is't pop")
-                                                file_path.pop(1)                    
-                    dir_path = ''
+                                                file_path.pop(1)
+                    for ls in ls_nm:    # for petlja razdvaja listu 
+                        spoj = " ".join(ls) # iz tuple daje dve reci 
+                                  
+                    dir_path = ''   # variabla putanje do direktorijuma
                     for path in file_path:
-                        qw = ''.join(path)
-                        dir_path = qw
-                        files = os.listdir(dir_path)
-                    
+                        qw = ''.join(path)  # spajamo izgovorene reci i simbole u u jedno
+                 
+                        dir_path += qw  # pomocu operatora dodle kreiramo putanju
+                        
+                      
+
+                    dir_path += spoj    # na kraju se dodaje ime direktorijuma
+                    print(dir_path)
+                    files = os.listdir(dir_path)    # proverava da li je postojeci direktorijum
+ 
                     for item in files:
                         
-                        print("direktori: ", item)
+                        print("direktori: ", item)  # ispisujemo sve iz direktorijuma sta se nalazi u njemu 
 
                 #lista abecede koja ne moze u ovaj program
                 # s-see, h-ash, o-oh, p-b, q-kwel, r-are, s-ass, oce/t-d, u-you, v-we, y-why       
