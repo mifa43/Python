@@ -35,14 +35,15 @@ def rekorduj():
     with hard as source:    # otvaranje i konvertovanje audio fajla u tekst 
         audio = r.record(source)
     rec_1 = r.recognize_google(audio)   # izgovorenu recenicu stavljamo u variablu
-
     rec_2 = rec_1.split(" ")    # zatim pomocu splita rastavljamo recenicu i stavljamo u listu
-    lista_cmds = ['open', 'copy', 'run']     # lista komandi koje mogu da se izvrsavaju npr open ima svoju listu sta moze da otvara dok do nema nista za sad
+
+    lista_cmds = ['open', 'copy', 'run', 'search']     # lista komandi koje mogu da se izvrsavaju npr open ima svoju listu sta moze da otvara dok do nema nista za sad
+    lista_za_search = ['YouTube', 'browser']
     lista_za_run = ["backup"]
     lista_za_open = ['YouTube', 'browser', 'Python']    # lista cmds ima komandu open komanda open ima listu sadrzaja sta moze da otvori
     lista_za_copy = ["file", "directory"]
     lista_simbola = ["/", "\\", "c"]
-    #print(lista_simbola[1])
+    #print(rec_2)
     provera = any(item in rec_2 for item in lista_cmds)     # any funkcija pravi proveru da li rec_2 i lista_cmds ima zajednicko nesto ako ima vraca nam bool true ili false ako nema
     if provera == True:     # ako je tacno ulazimo u sledeci blok
         for i in rec_2:     # proveravamo reci iz liste i liste cmds ako postoje pomocu filtera mozemo da je ispisemo
@@ -55,6 +56,8 @@ def rekorduj():
                     konvert = ''.join(list(filt_object))#filte_object pretvaramo u listu kako bi mogli da utvrdimo da li su izgovorene reci odgovarajuce ovom bloku
                     konvert_2 = ''.join(list(filt_object_2))    # flit_ogject je konvertovan u listu ali sa join pretvaramo u string tj. rec koja je izgovorena a pritom je komanda iz list_cmds
 
+                    if 'search' in konvert or konvert_2 == True :    # zato sto 'copy' komanda se nalazi u listi i kada kazemo do youtube otvara se yt ili bilo sta drugo morao sam da regulisem ako neko
+                        break
                     if 'copy' in konvert or konvert_2 == True :    # zato sto 'copy' komanda se nalazi u listi i kada kazemo do youtube otvara se yt ili bilo sta drugo morao sam da regulisem ako neko
                         break   # kaze do da ne otvara stvari koje se otvaraju sa open za to sam koristio bool ako se 'copy' nadje u reci da brejkujemo do sledece linije onda odatle mozemo da dodamo komande za copy 
                     if (konvert == 'browser' or konvert_2 == 'browser'): 
@@ -188,8 +191,6 @@ se navodi da je razmak izmedju
                         qw = ''.join(path)  # spajamo izgovorene reci i simbole u u jedno
                  
                         dir_path += qw  # pomocu operatora dodle kreiramo putanju
-                        
-                      
 
                     dir_path += spoj    # na kraju se dodaje ime direktorijuma
                     print(dir_path)
@@ -215,6 +216,51 @@ se navodi da je razmak izmedju
 
             print("yes it's true")
             os.system('python "c:\\users\\milos\\desktop\\python Pro\\python\\Voice_Text\\copy_dirs.py"')
+    provera = any(item in rec_2 for item in lista_cmds)
+    if provera == True:
+        filt_object = filter(lambda a : i in a, lista_cmds)
+        provera_2 = any(item in rec_2 for item in lista_za_search)
+        if provera_2 == True:
+            filt_object_2 = (filter(lambda b : i in b, lista_za_search))
+            konvert = ''.join(list(filt_object_2))
+            while True:
+                    izlaz = ['exit']
+
+                    print("Izgovori sta zelis da pretrazis na %s. " % konvert)
+                
+                    fs = 44100
+                    seconds = 5
+                    mojrekording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
+                    sd.wait()  
+                    write('output.wav', fs, mojrekording)  
+
+                    data, samplerate = sf.read('output.wav')    
+                    sf.write('output.flac', data, samplerate)  
+                    
+                    r = sr.Recognizer() 
+                    hard = sr.AudioFile('output.flac') 
+                    with hard as source:
+                        audio = r.record(source)
+                    navodi = r.recognize_google(audio)
+                    navodi_2 = navodi.split(" ")
+                   
+
+                    provera = any(item in navodi_2 for item in izlaz)
+                    filt_object = filter(lambda a : i in a, izlaz)
+                    konvert_2 = ''.join(list(filt_object))
+                    break
+                    # if provera == True:
+                    #     print('Zavrsio si sa pretragom')
+                    #     break
+            rec_za_pretragu = " ".join(navodi_2)
+            print(rec_za_pretragu)
+            if konvert == 'browser':
+                
+                url = ('https://www.google.com/?#q=' + rec_za_pretragu)     # url stranice koju otvaramo   
+                chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'  # ovo je lokacija chroma 
+                webbrowser.get(chrome_path).open(url, new=1)
+
+
 
 def pocetak():
     global sifra
