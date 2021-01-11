@@ -5,7 +5,7 @@ app = Flask(__name__)
 PORT = 3200
 HOST = "0.0.0.0"
 
-info = {
+INFO = {
     "jezici":{
         "es":"Spanija",
         "en":"Engleska",
@@ -44,6 +44,11 @@ def query_string():
         return res
 
     res = make_response(jsonify({"error":"nema query stringa"}),400)
+    return res
+#   PRIKAZ JSON 
+@app.route("/json")
+def get_json():
+    res = make_response(jsonify(INFO),200)
     return res
 
 if __name__ == "__main__":
