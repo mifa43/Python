@@ -84,6 +84,51 @@ def create_collection(collection):
     res = make_response(jsonify({"poruka":"Kolekcija je kreirana!"}))
     return res
 
+#PUT METODA
+# localhost:3200/json/cars/f - body/raw kada obrisemo clanove i dodamo {"novi":"ford"} na taj nacin smo izmenili clana ferrari sa fordom
+@app.route("/json/<collection>/<member>", methods = ["PUT"])
+def update_collection(collection, member):
+
+    req = request.get_json()
+
+    if collection in INFO:
+        if member:
+            INFO[collection][member] = req["novi"]
+            res = make_response(jsonify({"res":INFO[collection]}),200)
+            return res
+
+    
+        res = make_response(jsonify({"error":"Clan nije pronadjen"}),400)
+        return res
+
+    res = make_response(jsonify({"error":"Kolekcija nije pronadjena"}),400)
+    return res
+
+#DELETE METODA
+# u postmanu se odabere delete metoda localhost:3200/json/cars ukucamo i brisemo kolekciju cars 
+# ali prethodno je potrebno da kolekcija cars postoji. Potrebno je da se vratimo na post metodu i kreiramo cars 
+
+
+@app.route("/json/<collection>", methods = ["DELETE"])
+def delete_collection(collection):
+    if collection in INFO:
+        del INFO[collection]
+        res = make_response(jsonify(INFO),200)
+        return res
+
+    res = make_response(jsonify({"error":"Kolekcija nije pronadjena"}),400)
+    return res
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     print("Server je pokrenut na portu %s"%(PORT))
     app.run(host = HOST, port = PORT)
