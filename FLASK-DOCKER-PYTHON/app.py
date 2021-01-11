@@ -68,7 +68,21 @@ def get_data(collection, member):
     res = make_response(jsonify({"error":"kolekcija nije pronadjen"}),400)  # gresk ako nema kolekcije
     return res
 
+#POST METODA
+#kreiranje nove kolekcije localhost:3200/json/cars = naziv cars, prvo se namesta POST METODA, otvaramo body, raw.
+#zatim se kreira json struktura u body i upisuju vrednosti kada odemo da proverimo u postmanu localhost:3200/json = vidimo novu kolekciju cars
 
+@app.route("/json/<collection>", methods = ["POST"])
+def create_collection(collection):
+    req = request.get_json()
+
+    if collection in INFO:
+        res = make_response(jsonify({"error":"Kolekcija vec postoji"}))
+        return res
+
+    INFO.update({collection: req})
+    res = make_response(jsonify({"poruka":"Kolekcija je kreirana!"}))
+    return res
 
 if __name__ == "__main__":
     print("Server je pokrenut na portu %s"%(PORT))
