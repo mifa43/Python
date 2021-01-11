@@ -51,6 +51,25 @@ def get_json():
     res = make_response(jsonify(INFO),200)
     return res
 
+#pretrazivanje kolekcija i clanova
+#localhost:3200/json/clouds/IBMs = 400 greska ne postoji ovaj clan
+#localhost:3200/json/clouds/IBM = 200 postoji clan
+@app.route("/json/<collection>/<member>")
+def get_data(collection, member):
+    if collection in INFO:
+        member = INFO[collection].get(member)
+        if member:
+            res = make_response(jsonify({"res":member}),200)
+            return res
+
+        res = make_response(jsonify({"error":"clan nije pronadjen"}),400)   # greska ako nema clana
+        return res
+
+    res = make_response(jsonify({"error":"kolekcija nije pronadjen"}),400)  # gresk ako nema kolekcije
+    return res
+
+
+
 if __name__ == "__main__":
     print("Server je pokrenut na portu %s"%(PORT))
     app.run(host = HOST, port = PORT)
