@@ -54,6 +54,7 @@ def get_json():
 #pretrazivanje kolekcija i clanova
 #localhost:3200/json/clouds/IBMs = 400 greska ne postoji ovaj clan
 #localhost:3200/json/clouds/IBM = 200 postoji clan
+
 @app.route("/json/<collection>/<member>")
 def get_data(collection, member):
     if collection in INFO:
