@@ -119,16 +119,16 @@ def delete_collection(collection):
     res = make_response(jsonify({"error":"Kolekcija nije pronadjena"}),400)
     return res
 
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     print("Server je pokrenut na portu %s"%(PORT))
     app.run(host = HOST, port = PORT)
+
+
+# VIRTUALENV
+#1. prvo se instalira sa pip install virtuelenv
+#2. virtualenv -p python docker-flask
+#3. cd c:/put do direktorijuma u kome se nalazi novo kreirani virtualenv | docker-flask
+#4. cd scripts
+#5. cmd activate | ispisuje poruku neku vezanu za microsoft =Microsoft Windows [Version 10.0.19042.685](c) 2020 Microsoft Corporation. All rights reserved.
+#6. nakon toga kada ukucamo activate je ispisano sivom bojom i opalimo enter
+#7. nas virtuelenv je aktivan ovako izgleda kada je aktivan: (docker_flask) C:\Users\mifa4\Desktop\Python\Python_pro\Python\FLASK-DOCKER-PY
