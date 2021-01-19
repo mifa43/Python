@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, make_response
 from flask_mysqldb import MySQL
 import os
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash 
+import jwt
+import datetime
 
 
 app = Flask(__name__)
@@ -69,8 +71,7 @@ def get_one_user(public_id):
     cur.execute(query)
     db.connection.commit()
     cur.close()
-    if not public_id:   #sledeci korak sredjivanje izuzetka 
-        return jsonify({"Message" : "User not found"})
+
     for i in cur:
         user_data = {}
         user_data['public_id'] = i[0]
@@ -79,8 +80,10 @@ def get_one_user(public_id):
         user_data['is_admin'] = i[3]
         
 
-    
-    return jsonify({"Users": user_data})
+    try:
+        return jsonify({"Users": user_data})
+    except:
+        return jsonify({"Message" : "User not found"})
 
     
 @app.route('/user', methods = ['POST'])
@@ -89,21 +92,54 @@ def create_user():
 
     hash_password = generate_password_hash(data['password'], method = 'sha256')
 
-    new_user = Insert(str(uuid.uuid4()), data['name'], hash_password, 0) #nula simbolizuje false a jedan true
+    Insert(str(uuid.uuid4()), data['name'], hash_password, 0) #nula simbolizuje false a jedan true
     return jsonify({"Message" : "New user created!"})
 
 
 @app.route('/user/<public_id>', methods = ['PUT'])
 def promote_user(public_id):
+
+    cur = db.connection.cursor()
+    query = "SELECT public_id, name, password, is_admin FROM rest_api.rest_api WHERE public_id='{0}';".format(public_id)
+    cur.execute(query)
+    query = "UPDATE rest_api.rest_api SET is_admin = '1' WHERE public_id = '{0}';".format(public_id)
+    cur.execute(query)
+
+    db.connection.commit()
+    cur.close()
+    try:
+        return jsonify({"Message": "The user has been promoted!"})
+    except:
+        return jsonify({"Message" : "User not found"})
+
+
+
     return ""
 
 @app.route('/user/<public_id>', methods = ['DELETE'])
 def delete_user(public_id):
-    return ""
+    cur = db.connection.cursor()
+    query = "DELETE FROM rest_api.rest_api WHERE public_id = '{0}';".format(public_id)
+    cur.execute(query)
+    db.connection.commit()
+    cur.close()
 
+ 
+    try:
+        return jsonify({"Message": "The user has been deleted!"})
+    except:
+        return jsonify({"Message" : "User not found"})
+    
+@app.route('/login')
+def login():
+    auth = request.authorization
 
+    if not auth or not auth.username or not auth.password:
+        return make_response('Could not verify 0', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
 
 
 
 if __name__ == "__main__":
     app.run(debug = True)
+    
+    #27 minut klipa
