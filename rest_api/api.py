@@ -5,7 +5,7 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash 
 import jwt
 import datetime
-
+from functools import wraps
 
 app = Flask(__name__)
 dbpass = os.getenv('dbpassword')
@@ -14,6 +14,7 @@ app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = dbpass
 app.config['MYSQL_DB'] = 'rest_api'
+
 
 db = MySQL(app)
 app.app_context().push()
@@ -42,10 +43,47 @@ class Insert(): # Upisivanje u bazu pomocu konstruktora promenljivih vrednosti
         cur.execute(query)
         db.connection.commit()
         cur.close()
-
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+        if not token:
+            return jsonify({"message" : "token is missing!"}), 401
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+            
+            cur = db.connection.cursor()
+            query = "SELECT public_id FROM rest_api.rest_api WHERE public_id = '{0}';".format(data['public_id'])
+            cur.execute(query)
+            var3 = cur.fetchall()
+            db.connection.commit()
+            cur.close()
+            for key in var3:
+                key
+                print(key[0])
+        except:
+            return jsonify({"message" : "token is invalid!"}), 401
+        return f(key, *args, **kwargs)
+    return decorated
 
 @app.route('/user', methods = ['GET'])
-def get_all_users():
+@token_required
+def get_all_users(key):
+    for user in key:
+        
+        cur = db.connection.cursor()
+        query = "SELECT is_admin FROM rest_api.rest_api WHERE public_id = '{0}';".format(user)
+        cur.execute(query)
+        var4 = cur.fetchall()
+        db.connection.commit()
+        cur.close()
+        for item in var4:
+            
+
+            if item[0] == 0:
+                return jsonify({"message" : "Cannot preforam that fuction!"})
     output = []
     cur = db.connection.cursor()
     query = "SELECT public_id, name, password, is_admin FROM rest_api.rest_api;"
@@ -64,8 +102,22 @@ def get_all_users():
     return jsonify({"Users": output})
 
 @app.route('/user/<public_id>', methods = ['GET'])
-def get_one_user(public_id):
-    
+@token_required
+def get_one_user(key, public_id):
+    for user in key:
+        
+        cur = db.connection.cursor()
+        query = "SELECT is_admin FROM rest_api.rest_api WHERE public_id = '{0}';".format(user)
+        cur.execute(query)
+        var4 = cur.fetchall()
+        db.connection.commit()
+        cur.close()
+        for item in var4:
+            
+
+            if item[0] == 0:
+                return jsonify({"message" : "Cannot preforam that fuction!"})   
+ 
     cur = db.connection.cursor()
     query = "SELECT public_id, name, password, is_admin FROM rest_api.rest_api WHERE public_id='{0}';".format(public_id)
     cur.execute(query)
@@ -87,17 +139,45 @@ def get_one_user(public_id):
 
     
 @app.route('/user', methods = ['POST'])
-def create_user():
+@token_required
+def create_user(key):
+    for user in key:
+        
+        cur = db.connection.cursor()
+        query = "SELECT is_admin FROM rest_api.rest_api WHERE public_id = '{0}';".format(user)
+        cur.execute(query)
+        var4 = cur.fetchall()
+        db.connection.commit()
+        cur.close()
+        for item in var4:
+            
+            if item[0] == 0:
+                return jsonify({"message" : "Cannot preforam that fuction!"})
+
     data = request.get_json()
 
     hash_password = generate_password_hash(data['password'], method = 'sha256')
-
+    
     Insert(str(uuid.uuid4()), data['name'], hash_password, 0) #nula simbolizuje false a jedan true
     return jsonify({"Message" : "New user created!"})
 
 
 @app.route('/user/<public_id>', methods = ['PUT'])
-def promote_user(public_id):
+@token_required
+def promote_user(key, public_id):
+    for user in key:
+        
+        cur = db.connection.cursor()
+        query = "SELECT is_admin FROM rest_api.rest_api WHERE public_id = '{0}';".format(user)
+        cur.execute(query)
+        var4 = cur.fetchall()
+        db.connection.commit()
+        cur.close()
+        for item in var4:
+            
+
+            if item[0] == 0:
+                return jsonify({"message" : "Cannot preforam that fuction!"})
 
     cur = db.connection.cursor()
     query = "SELECT public_id, name, password, is_admin FROM rest_api.rest_api WHERE public_id='{0}';".format(public_id)
@@ -117,7 +197,22 @@ def promote_user(public_id):
     return ""
 
 @app.route('/user/<public_id>', methods = ['DELETE'])
-def delete_user(public_id):
+@token_required
+def delete_user(key, public_id):
+    for user in key:
+        
+        cur = db.connection.cursor()
+        query = "SELECT is_admin FROM rest_api.rest_api WHERE public_id = '{0}';".format(user)
+        cur.execute(query)
+        var4 = cur.fetchall()
+        db.connection.commit()
+        cur.close()
+        for item in var4:
+            
+
+            if item[0] == 0:
+                return jsonify({"message" : "Cannot preforam that fuction!"})
+
     cur = db.connection.cursor()
     query = "DELETE FROM rest_api.rest_api WHERE public_id = '{0}';".format(public_id)
     cur.execute(query)
@@ -134,12 +229,58 @@ def delete_user(public_id):
 def login():
     auth = request.authorization
 
+    cur = db.connection.cursor()
+    query = "SELECT name FROM rest_api.rest_api WHERE name = '{0}';".format(auth.username)
+    cur.execute(query)
+    var = cur.fetchall()
+    db.connection.commit()
+    cur.close()
+
     if not auth or not auth.username or not auth.password:
         return make_response('Could not verify 0', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
+
+    for i in var:
+        i = "".join(i)
+        a = any(item in auth.username for item in i)
+        if auth.username == i:
+           
+            cur = db.connection.cursor()
+            query = "SELECT password FROM rest_api.rest_api WHERE name = '{0}';".format(auth.username)
+            cur.execute(query)
+            var1 = cur.fetchall()
+            db.connection.commit()
+            cur.close()
+            for j in var1:
+                j = "".join(j)
+                if check_password_hash(j, auth.password):
+                    cur = db.connection.cursor()
+                    query = "SELECT public_id FROM rest_api.rest_api WHERE password = '{0}';".format(j)
+                    cur.execute(query)
+                    var2 = cur.fetchall()
+                    db.connection.commit()
+                    cur.close()
+                    for value in var2:
+                        value = "".join(value)
+                        
+                        token = jwt.encode({"public_id" : value, "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=30) }, app.config['SECRET_KEY'],algorithm='HS256')
+                                                                                                      
+                        return jsonify({"token": token })
+                
+   
+    if not var:
+        
+        return make_response('Could not verify 1', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
+
+
+    
+
+    
+
+    return make_response('Could not verify 2', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
 
 
 
 if __name__ == "__main__":
     app.run(debug = True)
     
-    #27 minut klipa
+    #35 minut klipa
