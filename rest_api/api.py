@@ -43,6 +43,19 @@ class Insert(): # Upisivanje u bazu pomocu konstruktora promenljivih vrednosti
         cur.execute(query)
         db.connection.commit()
         cur.close()
+
+class Insert_todo(): # Upisivanje u bazu pomocu konstruktora promenljivih vrednosti
+    def __init__(self, text, complete, user_id):    # metoda sa parametrima
+        self.text = text  # deklaracija varijabli
+        self.complete = complete
+        self.user_id = user_id
+  
+
+        cur = db.connection.cursor()
+        query = "INSERT INTO rest_api.todo (text, complete, user_id) VALUES ('{0}','{1}','{2}');".format(self.text, self.complete, self.user_id)
+        cur.execute(query)
+        db.connection.commit()
+        cur.close()
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -241,7 +254,7 @@ def login():
 
     for i in var:
         i = "".join(i)
-        a = any(item in auth.username for item in i)
+        #a = any(item in auth.username for item in i)
         if auth.username == i:
            
             cur = db.connection.cursor()
@@ -266,21 +279,105 @@ def login():
                                                                                                       
                         return jsonify({"token": token })
                 
-   
     if not var:
         
         return make_response('Could not verify 1', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
 
-
-    
-
-    
-
     return make_response('Could not verify 2', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
 
+@app.route("/todo", methods = ['GET'])
+@token_required
+def get_all_todos(key):
+    cur = db.connection.cursor()
+    query = "SELECT id, text, complete, user_id FROM rest_api.todo WHERE  user_id ='{0}';".format(key[0])
+    cur.execute(query)
+    db.connection.commit()
+    cur.close()
+    output = []
+    for i in cur:
+        todo_data = {}
+        todo_data['id'] = i[0]
+        todo_data['text'] = i[1]
+        todo_data['complete'] = i[2]
+        todo_data['user_id'] = i[3]
+        output.append(todo_data)
+    return jsonify({"todos" : output})
 
+@app.route('/todo/<todo_id>', methods = ['GET'])
+@token_required
+def get_one_todo(key, todo_id):
+    cur = db.connection.cursor()
+    query = "SELECT id, text, complete, user_id FROM rest_api.todo WHERE  user_id ='{0}' and id = {1};".format(key[0], todo_id)
+    cur.execute(query)
+    db.connection.commit()
+    cur.close()
+    
+    for i in cur:
+        if not i[0]:
+            return jsonify({"message" : "No todo found"})
+        todo_data = {}
+        todo_data['id'] = i[0]
+        todo_data['text'] = i[1]
+        todo_data['complete'] = i[2]
+        todo_data['user_id'] = i[3]
+    try:
+        return jsonify({"todo" : todo_data})
+    except:
+        return jsonify({"can't find todo with current id" : todo_id})
+
+@app.route('/todo', methods = ['POST'])
+@token_required
+def create_todo(key):
+    data = request.get_json()
+    
+    
+    Insert_todo(data['text'], 0, key[0])
+
+    return jsonify({"message" : "Todo is created!"})
+
+@app.route('/todo/<todo_id>', methods = ['PUT'])
+@token_required
+def complete_todo(key, todo_id):
+    cur = db.connection.cursor()
+    query = "SELECT complete FROM rest_api.todo WHERE  user_id ='{0}' and id = {1};".format(key[0], todo_id)
+    cur.execute(query)
+    var = cur.fetchall()
+    db.connection.commit()
+    cur.close()
+
+    if not var:
+        return jsonify({"message" : "todo not found"})
+   
+    cur = db.connection.cursor()
+    query = "UPDATE rest_api.todo SET complete = '1' WHERE id = '{0}' and user_id = '{1}';".format(todo_id, key[0])
+    cur.execute(query)
+    db.connection.commit()
+    cur.close()
+    return jsonify({"message" : "todo is complited"})
+    
+        
+
+@app.route('/todo/<todo_id>', methods = ['DELETE'])
+@token_required
+def deleted_todo(key, todo_id):
+    cur = db.connection.cursor()
+    query = "SELECT * FROM rest_api.todo WHERE  user_id ='{0}' and id = {1};".format(key[0], todo_id)
+    cur.execute(query)
+    var = cur.fetchall()
+    db.connection.commit()
+    cur.close()
+
+    if not var:
+        return jsonify({"message" : "todo not found"})
+    
+    cur = db.connection.cursor()
+    query = "DELETE FROM rest_api.todo WHERE user_id = '{0}' and id = '{1}';".format(key[0], todo_id)
+    cur.execute(query)
+    db.connection.commit()
+    cur.close()
+    return jsonify({"message" : "todo is deleted"})
 
 if __name__ == "__main__":
     app.run(debug = True)
     
-    #35 minut klipa
+    #https://www.youtube.com/watch?v=WxGBoY5iNXY&list=LL&index=5&t=2143s&ab_channel=PrettyPrinted - dobar kanal za jwt rest-api
