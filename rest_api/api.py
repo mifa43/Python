@@ -18,14 +18,14 @@ app.config['MYSQL_DB'] = 'rest_api'
 
 db = MySQL(app)
 app.app_context().push()
-# class User():
+# class User():     # blok za kreiranje tabele u mysql| cilj ova tabele je skladistenje podataka o korisnicima
 #     cur = db.connect.cursor()
 #     query = "CREATE TABLE rest_api (id INT NOT NULL PRIMARY KEY,public_id INT, name  VARCHAR(40),password VARCHAR(30), is_admin BOOLEAN)"
 #     cur.execute(query)
 #     db.connect.commit()
 #     cur.close()
 
-# class Todo():
+# class Todo():     # todo tabela je tabela za korisnike i njihove dnevne obaveze 
 #         cur = db.connect.cursor()
 #         query = "CREATE TABLE todo (id INT NOT NULL PRIMARY KEY,public_id INT, text  VARCHAR(40),complete BOOLEAN, user_id BOOLEAN)"
 #         cur.execute(query)
@@ -44,46 +44,46 @@ class Insert(): # Upisivanje u bazu pomocu konstruktora promenljivih vrednosti
         db.connection.commit()
         cur.close()
 
-class Insert_todo(): # Upisivanje u bazu pomocu konstruktora promenljivih vrednosti
-    def __init__(self, text, complete, user_id):    # metoda sa parametrima
-        self.text = text  # deklaracija varijabli
+class Insert_todo(): 
+    def __init__(self, text, complete, user_id):
+        self.text = text 
         self.complete = complete
         self.user_id = user_id
   
-
         cur = db.connection.cursor()
         query = "INSERT INTO rest_api.todo (text, complete, user_id) VALUES ('{0}','{1}','{2}');".format(self.text, self.complete, self.user_id)
         cur.execute(query)
         db.connection.commit()
         cur.close()
-def token_required(f):
+
+def token_required(f):  #dekorator 
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+        if 'x-access-token' in request.headers:     
+            token = request.headers['x-access-token']   # requestujemo hedere pre tokena 
         if not token:
             return jsonify({"message" : "token is missing!"}), 401
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')  # dekodovanje tokena
             
             cur = db.connection.cursor()
-            query = "SELECT public_id FROM rest_api.rest_api WHERE public_id = '{0}';".format(data['public_id'])
-            cur.execute(query)
-            var3 = cur.fetchall()
+            query = "SELECT public_id FROM rest_api.rest_api WHERE public_id = '{0}';".format(data['public_id'])    # trazimo id u dekodovanom tokenu i posle nakon pozivanja dekoratora/
+            cur.execute(query)                                                                               # proveravamo da li je is_admin = 1 onda ako je istina korisnik ima pristup/
+            var3 = cur.fetchall()                                                                           # izvrsavanja funkcijonalnosti
             db.connection.commit()
             cur.close()
             for key in var3:
                 key
-                print(key[0])
+                print(key[0])   
         except:
             return jsonify({"message" : "token is invalid!"}), 401
-        return f(key, *args, **kwargs)
+        return f(key, *args, **kwargs)  # vracamo key sto je public_id iz tokena
     return decorated
 
 @app.route('/user', methods = ['GET'])
-@token_required
-def get_all_users(key):
+@token_required #pozvani dekorator
+def get_all_users(key): # argument sa korisnickim id-om iz tokena proveravamo da li je admin
     for user in key:
         
         cur = db.connection.cursor()
@@ -94,7 +94,6 @@ def get_all_users(key):
         cur.close()
         for item in var4:
             
-
             if item[0] == 0:
                 return jsonify({"message" : "Cannot preforam that fuction!"})
     output = []
@@ -110,8 +109,7 @@ def get_all_users(key):
         user_data['password'] = i[2]
         user_data['is_admin'] = i[3]
         output.append(user_data)
-
-    
+  
     return jsonify({"Users": output})
 
 @app.route('/user/<public_id>', methods = ['GET'])
@@ -127,7 +125,6 @@ def get_one_user(key, public_id):
         cur.close()
         for item in var4:
             
-
             if item[0] == 0:
                 return jsonify({"message" : "Cannot preforam that fuction!"})   
  
@@ -144,7 +141,6 @@ def get_one_user(key, public_id):
         user_data['password'] = i[2]
         user_data['is_admin'] = i[3]
         
-
     try:
         return jsonify({"Users": user_data})
     except:
@@ -174,7 +170,6 @@ def create_user(key):
     Insert(str(uuid.uuid4()), data['name'], hash_password, 0) #nula simbolizuje false a jedan true
     return jsonify({"Message" : "New user created!"})
 
-
 @app.route('/user/<public_id>', methods = ['PUT'])
 @token_required
 def promote_user(key, public_id):
@@ -188,7 +183,6 @@ def promote_user(key, public_id):
         cur.close()
         for item in var4:
             
-
             if item[0] == 0:
                 return jsonify({"message" : "Cannot preforam that fuction!"})
 
@@ -205,8 +199,6 @@ def promote_user(key, public_id):
     except:
         return jsonify({"Message" : "User not found"})
 
-
-
     return ""
 
 @app.route('/user/<public_id>', methods = ['DELETE'])
@@ -222,7 +214,6 @@ def delete_user(key, public_id):
         cur.close()
         for item in var4:
             
-
             if item[0] == 0:
                 return jsonify({"message" : "Cannot preforam that fuction!"})
 
@@ -232,7 +223,6 @@ def delete_user(key, public_id):
     db.connection.commit()
     cur.close()
 
- 
     try:
         return jsonify({"Message": "The user has been deleted!"})
     except:
@@ -249,14 +239,14 @@ def login():
     db.connection.commit()
     cur.close()
 
-    if not auth or not auth.username or not auth.password:
+    if not auth or not auth.username or not auth.password:  # ako nema informacija dizemo response
         return make_response('Could not verify 0', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
 
     for i in var:
         i = "".join(i)
         #a = any(item in auth.username for item in i)
-        if auth.username == i:
-           
+        if auth.username == i:  # provera za korisnicko ime
+     
             cur = db.connection.cursor()
             query = "SELECT password FROM rest_api.rest_api WHERE name = '{0}';".format(auth.username)
             cur.execute(query)
@@ -265,7 +255,7 @@ def login():
             cur.close()
             for j in var1:
                 j = "".join(j)
-                if check_password_hash(j, auth.password):
+                if check_password_hash(j, auth.password):   # dekodujemo lozinku koju je korisnik uneo u formi i ako je ona ista kao j sto je i lozinka iz baze onda nastavljamo ka generisanju tokena
                     cur = db.connection.cursor()
                     query = "SELECT public_id FROM rest_api.rest_api WHERE password = '{0}';".format(j)
                     cur.execute(query)
@@ -273,14 +263,12 @@ def login():
                     db.connection.commit()
                     cur.close()
                     for value in var2:
-                        value = "".join(value)
-                        
+                        value = "".join(value)  
+                        # token sadrzi public_id, vreme generisanja kao i vreme trajanja
                         token = jwt.encode({"public_id" : value, "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=30) }, app.config['SECRET_KEY'],algorithm='HS256')
                                                                                                       
-                        return jsonify({"token": token })
-                
+                        return jsonify({"token": token })  
     if not var:
-        
         return make_response('Could not verify 1', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
 
     return make_response('Could not verify 2', 401, {'WWW-Authenticate' : 'Basic realm = "Login required!"'})
@@ -329,8 +317,7 @@ def get_one_todo(key, todo_id):
 @token_required
 def create_todo(key):
     data = request.get_json()
-    
-    
+
     Insert_todo(data['text'], 0, key[0])
 
     return jsonify({"message" : "Todo is created!"})
@@ -355,8 +342,6 @@ def complete_todo(key, todo_id):
     cur.close()
     return jsonify({"message" : "todo is complited"})
     
-        
-
 @app.route('/todo/<todo_id>', methods = ['DELETE'])
 @token_required
 def deleted_todo(key, todo_id):
@@ -380,4 +365,4 @@ def deleted_todo(key, todo_id):
 if __name__ == "__main__":
     app.run(debug = True)
     
-    #https://www.youtube.com/watch?v=WxGBoY5iNXY&list=LL&index=5&t=2143s&ab_channel=PrettyPrinted - dobar kanal za jwt rest-api
+    #https://www.youtube.com/watch?v=WxGBoY5iNXY&list=LL&index=5&t=2143s&ab_channel=PrettyPrinted - dobar kanal za vezbu
