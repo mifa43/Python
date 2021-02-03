@@ -9,9 +9,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
-from tkinter import *
-from tkinter import ttk
+
 from PIL import Image
+import random
+
 app = Flask(__name__)
 
 dbpass = os.getenv('dbpassword')
@@ -48,6 +49,17 @@ class Make_qr():    # generisanje qr koda sa informacijama o korisniku
         self.qr = pyqrcode.create(self.public_id + " " + self.password)
 
         self.qr.png(self.name_qr + ".png", scale = 9)
+class Insert_qr():    # kreiranje korisnika i upisivanje u bazu 
+    def __init__(self, public_id, pin):
+        self.public_id = public_id
+        self.pin = pin
+
+
+        cur = db.connection.cursor()
+        query = "INSERT INTO rest_api.qr_user (public_id, pin) VALUES ('{0}', {1});".format(self.public_id, self.pin)
+        cur.execute(query)
+        db.connection.commit()
+        cur.close()
 def token_required(f):  # dekorater koji kada je pozvan zahteva od korisnika token. u ovom bloku token se dekoduje i vracamo public_id u variablu key nakon toga je upisujemo kao parametar u root definicijama i pravimo proveru da li je admin
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -158,6 +170,7 @@ def generate(key): # generisanje qr koda i unosenje podataka korisnika (lozinka 
     
     
     data = request.get_json()
+
     cur = db.connection.cursor()
     query = "SELECT public_id, password FROM rest_api.banka_user WHERE public_id='{0}' and password = '{1}';".format(data['public_id'], data['password'])
     cur.execute(query)
@@ -168,14 +181,24 @@ def generate(key): # generisanje qr koda i unosenje podataka korisnika (lozinka 
     if not var:
         return jsonify({"message" : "no user found"})
 
+    rand_num = "0123456789"
+
+    p = (random.choice(rand_num)for i in range(4))
+    p = "".join(p)
+
     Make_qr(data['public_id'],data['password'], data['name_qr'])
+    Insert_qr(data['public_id'], p) # kreiranje qr_koda u bazi 
     return jsonify({"message" : "QR-code is generated"})
 
-@app.route("/decode/<qr_data>", methods = ['POST'])
-def decode_qr(qr_data): # dekodovanje qr koda u putanju unosimo ime qr-koda npr(3.png) 
+# GET - provera stanja
+# PUT - uplacivanje
+
+
+@app.route("/decode/<qr_data>/<pin>", methods = [ 'GET',  'PUT'])
+def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda npr(3.png) nakon toga ide pin
     try:    # ako nema te slike dizemo izuzetak
         img = decode(Image.open("C:/Users/mifa4/Desktop/Python/Python_pro/Python/" + qr_data))
-
+        
         for item in img[0].data.decode('ascii'):
             if item == " ":
                 data = img[0].data.decode('ascii')
@@ -185,14 +208,121 @@ def decode_qr(qr_data): # dekodovanje qr koda u putanju unosimo ime qr-koda npr(
                 h["public_id"] = myset[0]
                 h["password"] = myset[1]
                 cur = db.connection.cursor()
-                query = "SELECT public_id, password FROM rest_api.banka_user WHERE public_id='{0}' and password = '{1}';".format(h['public_id'], h['password'])
+                query = "SELECT public_id, password FROM rest_api.banka_user WHERE public_id='{0}' and password = '{1}';".format(h['public_id'], h['password']) # provera da li je id iz qr.png postojeci u bazi
                 cur.execute(query)
                 var = cur.fetchall()
                 db.connection.commit()
                 cur.close()
+
+                
                 if not var:
                     return jsonify({"message" : "no user found with current qr-code"})  #ako nema qr-koda znci da korisnik ne pripada nasoj bazi
-        return jsonify({"message from qr-code" : h})
+                for item in var:
+                    
+                    cur = db.connection.cursor()
+                    query = "SELECT public_id FROM rest_api.qr_user WHERE public_id='{0}';".format(h['public_id'])  # provera id-a da li postoji u qr_user bazi
+                    cur.execute(query)
+                    var1 = cur.fetchall()
+                    db.connection.commit()
+                    cur.close()
+                    for i in var1:
+                        if h['public_id'] == item[0] and h['public_id'] == i[0]:
+                            
+                            cur = db.connection.cursor()
+                            query = "SELECT pin FROM rest_api.qr_user WHERE pin = '{0}';".format(pin)   # provera da li je pod time id-om tacan uneseni pin
+                            cur.execute(query)
+                            var2 = cur.fetchall()
+                            db.connection.commit()
+                            cur.close()
+                           
+                            if not var2:
+                                return jsonify({"Message" : "invalid pin"})
+                            for j in var2:
+                                if j[0] == pin:
+                                    data = request.get_json()
+
+                                    if request.method == 'GET':     # get metodu koristimo za proveru stanja sa qr_koda
+                                        if data['method'] == 'status':  # u postmanu navodimo 'GET' metodu u json formatu sa {"method" : "status"} ovako izgleda putanja localhost:5000/decode/aleksandar_qr.png/3897 prva vrednost posle decode je ime slike qr_koda nakon toga je pin
+                                            
+                                            cur = db.connection.cursor()
+                                            query = "SELECT sredstva FROM rest_api.qr_user WHERE pin = '{0}' and public_id = '{1}';".format(pin, h['public_id'])    # selektujemo sredstva na osnovu id-a i pin-a
+                                            cur.execute(query)
+                                            var3 = cur.fetchall()
+                                            db.connection.commit()
+                                            cur.close()
+                                            for s in var3:
+                                                
+                                                return jsonify({'your balance' : s[0]}) # ispisivanje sredstva
+                                        else:
+                                            return jsonify({'message' : 'wrong method'})
+                                    
+
+                                        
+                                    if request.method == 'PUT':     # kada je metod 'PUT' dodajemo dve pod metode {"method" : "width", "value" : 3000} vrednost koju dizemo sa racuna 
+                                        if data['method'] == 'width':
+                                            
+                                            cur = db.connection.cursor()
+                                            query = "SELECT sredstva FROM rest_api.qr_user WHERE pin = '{0}' and public_id = '{1}';".format(pin, h['public_id'])
+                                            cur.execute(query)
+                                            var3 = cur.fetchall()
+                                            db.connection.commit()
+                                            cur.close() 
+                                            
+
+                                            for value in var3:
+                                                print(value[0], data['value'])
+                                                x = int(value[0] - data['value'])
+
+                                                if value[0] == 0:
+                                                    return jsonify({"Message" : "there are not enough funds available"})
+                                                # if value[0] <= 0:
+                                                #     return jsonify({"Message" : "there are not enough funds available 1 "})
+
+                                                
+                                                cur = db.connection.cursor()
+                                                query = "UPDATE rest_api.qr_user SET sredstva = '{0}' WHERE pin = '{1}'".format(int(x), pin)
+                                                cur.execute(query)
+                                                db.connection.commit()
+                                                cur.close()
+                                               
+                                                
+                                                return jsonify({"You are width" : data['value']})
+                                        
+                                        elif data['method'] == 'pay':   #{"method" : "pay", "value" : 3000} uplacujemo na racun
+                                            
+                                            
+                                            cur = db.connection.cursor()
+                                            query = "SELECT sredstva FROM rest_api.qr_user WHERE pin = '{0}' and public_id = '{1}';".format(pin, h['public_id'])
+                                            cur.execute(query)
+                                            var3 = cur.fetchall()
+                                            db.connection.commit()
+                                            cur.close() 
+                                            
+
+                                            for value in var3:
+                                                print(value[0], data['value'])
+                                                x = int(value[0] + data['value'])
+
+                                               
+                                                cur = db.connection.cursor()
+                                                query = "UPDATE rest_api.qr_user SET sredstva = '{0}' WHERE pin = '{1}'".format(int(x), pin)
+                                                cur.execute(query)
+                                                db.connection.commit()
+                                                cur.close()
+                                               
+                                                
+                                                return jsonify({"You are pay" : data['value']})
+                                            # else:
+                                            #     return jsonify({'message' : 'wrong method'})
+
+                                            
+                                  
+
+
+                
+
+
+        return jsonify({"message" : "wrong method"})
     except: 
         return jsonify({"message" : "No such qr.png"})
 
@@ -245,4 +375,4 @@ if __name__ == "__main__":
 
 #admin 12345, milena soba1
 
-#sledeci korak je kreiranje dekoratera
+#sledeci korak je srediti izbacivanje greski, dodati deo gde ne mozemo da odemo u minus, srediti pravopis i dodati upuctvo upotrebe
