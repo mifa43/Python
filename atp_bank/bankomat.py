@@ -9,7 +9,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 from functools import wraps
-
 from PIL import Image
 import random
 
@@ -191,11 +190,22 @@ def generate(key): # generisanje qr koda i unosenje podataka korisnika (lozinka 
     return jsonify({"message" : "QR-code is generated"})
 
 # GET - provera stanja
-# PUT - uplacivanje
+# PUT - uplacivanje i podizanje
 
 
-@app.route("/decode/<qr_data>/<pin>", methods = [ 'GET',  'PUT'])
+@app.route("/bank_machine/<qr_data>/<pin>", methods = [ 'GET',  'PUT'])
 def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda npr(3.png) nakon toga ide pin
+    info = '''
+    How to pay? : Set the method to "PUT", in the URL after localhost: 5000 / decode / enter the name of your QR code / the next value represents pin 1234. eg (localhost: 5000 / decode / qr.png / 1111).
+        Select Body >>> raw >>> json and enter {"method": "pay", "value": 5000}
+
+    How to width? : Set the method to "PUT", enter the name of your qr code and pin..
+        Select Body >>> raw >>> json and enter {"method": "width", "value": 2700}
+
+    How to check the status? : Set the method to "GET", enter the name of your qr code and pin.
+        Select Body >>> raw >>> json and enter {"method": "status"}
+    '''
+    print(info)
     try:    # ako nema te slike dizemo izuzetak
         img = decode(Image.open("C:/Users/mifa4/Desktop/Python/Python_pro/Python/" + qr_data))
         
@@ -270,13 +280,13 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                             
 
                                             for value in var3:
-                                                print(value[0], data['value'])
+                                                #print(value[0], data['value'])
                                                 x = int(value[0] - data['value'])
 
                                                 if value[0] == 0:
                                                     return jsonify({"Message" : "there are not enough funds available"})
-                                                # if value[0] <= 0:
-                                                #     return jsonify({"Message" : "there are not enough funds available 1 "})
+                                                if x <= -1:
+                                                    return jsonify({"Message" : "there are not enough funds available 1 "})
 
                                                 
                                                 cur = db.connection.cursor()
@@ -300,7 +310,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                             
 
                                             for value in var3:
-                                                print(value[0], data['value'])
+                                                #print(value[0], data['value'])
                                                 x = int(value[0] + data['value'])
 
                                                
@@ -314,14 +324,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                                 return jsonify({"You are pay" : data['value']})
                                             # else:
                                             #     return jsonify({'message' : 'wrong method'})
-
-                                            
-                                  
-
-
-                
-
-
+                                
         return jsonify({"message" : "wrong method"})
     except: 
         return jsonify({"message" : "No such qr.png"})
