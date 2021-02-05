@@ -24,8 +24,6 @@ app.config['MYSQL_DB'] = 'rest_api'
 db = MySQL(app)
 app.app_context().push()
 
-
-    
 class Insert_bank():    # kreiranje korisnika i upisivanje u bazu 
     def __init__(self, ime, prezime, public_id, password, is_admin):
         
@@ -46,19 +44,19 @@ class Make_qr():    # generisanje qr koda sa informacijama o korisniku
         self.password = password
         self.name_qr = name_qr
         self.qr = pyqrcode.create(self.public_id + " " + self.password)
-
         self.qr.png(self.name_qr + ".png", scale = 9)
+
 class Insert_qr():    # kreiranje korisnika i upisivanje u bazu 
     def __init__(self, public_id, pin):
         self.public_id = public_id
         self.pin = pin
-
 
         cur = db.connection.cursor()
         query = "INSERT INTO rest_api.qr_user (public_id, pin) VALUES ('{0}', {1});".format(self.public_id, self.pin)
         cur.execute(query)
         db.connection.commit()
         cur.close()
+
 def token_required(f):  # dekorater koji kada je pozvan zahteva od korisnika token. u ovom bloku token se dekoduje i vracamo public_id u variablu key nakon toga je upisujemo kao parametar u root definicijama i pravimo proveru da li je admin
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -167,7 +165,6 @@ def generate(key): # generisanje qr koda i unosenje podataka korisnika (lozinka 
 
                 return jsonify({'message' : 'Cannot preform that function!'})
     
-    
     data = request.get_json()
 
     cur = db.connection.cursor()
@@ -191,7 +188,6 @@ def generate(key): # generisanje qr koda i unosenje podataka korisnika (lozinka 
 
 # GET - provera stanja
 # PUT - uplacivanje i podizanje
-
 
 @app.route("/bank_machine/<qr_data>/<pin>", methods = [ 'GET',  'PUT'])
 def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda npr(3.png) nakon toga ide pin
@@ -223,8 +219,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                 var = cur.fetchall()
                 db.connection.commit()
                 cur.close()
-
-                
+    
                 if not var:
                     return jsonify({"message" : "no user found with current qr-code"})  #ako nema qr-koda znci da korisnik ne pripada nasoj bazi
                 for item in var:
@@ -265,9 +260,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                                 return jsonify({'your balance' : s[0]}) # ispisivanje sredstva
                                         else:
                                             return jsonify({'message' : 'wrong method'})
-                                    
-
-                                        
+                                                                        
                                     if request.method == 'PUT':     # kada je metod 'PUT' dodajemo dve pod metode {"method" : "width", "value" : 3000} vrednost koju dizemo sa racuna 
                                         if data['method'] == 'width':
                                             
@@ -278,7 +271,6 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                             db.connection.commit()
                                             cur.close() 
                                             
-
                                             for value in var3:
                                                 #print(value[0], data['value'])
                                                 x = int(value[0] - data['value'])
@@ -287,20 +279,17 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                                     return jsonify({"Message" : "there are not enough funds available"})
                                                 if x <= -1:
                                                     return jsonify({"Message" : "there are not enough funds available 1 "})
-
-                                                
+                                              
                                                 cur = db.connection.cursor()
                                                 query = "UPDATE rest_api.qr_user SET sredstva = '{0}' WHERE pin = '{1}'".format(int(x), pin)
                                                 cur.execute(query)
                                                 db.connection.commit()
-                                                cur.close()
-                                               
+                                                cur.close()                                              
                                                 
                                                 return jsonify({"You are width" : data['value']})
                                         
                                         elif data['method'] == 'pay':   #{"method" : "pay", "value" : 3000} uplacujemo na racun
-                                            
-                                            
+                                                                                       
                                             cur = db.connection.cursor()
                                             query = "SELECT sredstva FROM rest_api.qr_user WHERE pin = '{0}' and public_id = '{1}';".format(pin, h['public_id'])
                                             cur.execute(query)
@@ -308,18 +297,15 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                             db.connection.commit()
                                             cur.close() 
                                             
-
                                             for value in var3:
                                                 #print(value[0], data['value'])
                                                 x = int(value[0] + data['value'])
-
-                                               
+                                             
                                                 cur = db.connection.cursor()
                                                 query = "UPDATE rest_api.qr_user SET sredstva = '{0}' WHERE pin = '{1}'".format(int(x), pin)
                                                 cur.execute(query)
                                                 db.connection.commit()
-                                                cur.close()
-                                               
+                                                cur.close()                                             
                                                 
                                                 return jsonify({"You are pay" : data['value']})
                                             # else:
@@ -367,8 +353,6 @@ def login():            # blokovima za generisanje,kreiranje korisnika,pretraziv
                         # token ima tajmer 30minuta nakon toga vise nije validan
                         #data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
                         return jsonify({"Token" : token})
-
-
 
     if not var:
         return make_response("could not verify 1", 401, {'WWW-Authenticate' : 'Basic realm = "Login required"'})
