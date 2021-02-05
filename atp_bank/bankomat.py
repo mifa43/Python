@@ -272,7 +272,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                             cur.close() 
                                             
                                             for value in var3:
-                                                #print(value[0], data['value'])
+                                                
                                                 x = int(value[0] - data['value'])
 
                                                 if value[0] == 0:
@@ -298,7 +298,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                             cur.close() 
                                             
                                             for value in var3:
-                                                #print(value[0], data['value'])
+                                                
                                                 x = int(value[0] + data['value'])
                                              
                                                 cur = db.connection.cursor()
@@ -308,8 +308,7 @@ def decode_qr(qr_data, pin): # dekodovanje qr koda u putanju unosimo ime qr-koda
                                                 cur.close()                                             
                                                 
                                                 return jsonify({"You are pay" : data['value']})
-                                            # else:
-                                            #     return jsonify({'message' : 'wrong method'})
+                                           
                                 
         return jsonify({"message" : "wrong method"})
     except: 
@@ -351,7 +350,7 @@ def login():            # blokovima za generisanje,kreiranje korisnika,pretraziv
                         public_id = "".join(public_id)
                         token = jwt.encode({"public_id" : public_id, "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes = 30)}, app.config['SECRET_KEY'], algorithm='HS256')
                         # token ima tajmer 30minuta nakon toga vise nije validan
-                        #data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+                        
                         return jsonify({"Token" : token})
 
     if not var:
