@@ -1,5 +1,4 @@
 # Assert naredba
-
 moja_lista = ['stvari']
 assert len(moja_lista) >= 1
 moja_lista.pop()
